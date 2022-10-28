@@ -7,9 +7,10 @@ start date: 10/24/2022
 
 import time
 import random
-
+#imports elements for the program to run
 startTime = time.time()
 
+#player settings for personalization
 runName = input("Name this run: ")
 playerName = input("Name your character: ")
 print("")
@@ -21,13 +22,19 @@ print("Medium: Standard. Mid-range health, expanded weapon list.")
 print("")
 print("Hard: The dark souls of text-based room-to-room dungeon crawlers. All weapons availible.")
 print("")
+#print statements to ask player what difficulty level they wish to use
 while True:
 	difficulty = input("Enter in a difficuly level: ")
-	if difficulty != "Hard" or "Easy" or "Medium":
-		print("Enter difficulty as written.")
-		continue
+	if difficulty == "Hard" or difficulty == "Easy" or difficulty == "Medium":
+		print("You have selected " + difficulty)
+		#if the player picks a valid option, it breaks out of the loop
+		break
+	else:
+		print("Please enter the name as written")
+		#if an invalid option is met, it says so and asks again
+		
 
-if difficulty == "Easy":
+if difficulty == "Easy" or difficulty == "Medium" or difficulty == "Hard":
 	
 	print("Choose your starting weapon:")
 	print("")
@@ -39,9 +46,10 @@ if difficulty == "Easy":
 	print("")
 	print("Bow: can do low damage, but also high damage")
 	print("")
+	#prints out what the player can start with bassed on difficulty selected
 	
 	
-	if difficulty == "Medium":
+	if difficulty == "Medium" or difficulty == "Hard":
 	
 		print("Greatsword: High damage, but missing skips your next turn.")
 		print("")
@@ -49,7 +57,7 @@ if difficulty == "Easy":
 		print("")
 		print("Wand of Mystic Power: Low average damage, but chance to deal insane damage")
 		print("")
-		
+		#all contained within each other so that it asscends and prints all the previous statements
 		if difficulty == "Hard":
 			
 			print("Gun: Bang bang. High damage, reload every other turn")
@@ -62,26 +70,27 @@ while True:
 	weaponChoice = input("You will use this weapon for the rest of the game. Choose wisely: ")
 	
 	
-	
-	if (weaponChoice == "Wand of Mystic Power" or "Alchemist Spoon" or "Greatsword") and difficulty == "Easy":
+	#checks for valid weapon choice by name and difficulty level
+	if (weaponChoice == "Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword") and difficulty == "Easy":
 		
 		print("Weapon not availible for this difficulty.")
 		continue
 	
-	elif (weaponChoice == "Gun" or "Lashing Words" or "The Power of Friendship") and difficulty != "Hard":
+	elif (weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice == "The Power of Friendship") and difficulty != "Hard":
 		
 		print("Weapon not availible for this difficulty.")
 		continue
 	
-	elif weaponChoice != "Sword" or "Axe" or "Dagger" or "Bow" or "Wand of Mystic Power" or "Alchemist Spoon" or "Greatsword" or "Gun" or "Lashing Words" or "The Power of Friendship":
-		
-		print("Enter weapon choice as written.")
-		continue	
-	
-	else:
+	elif weaponChoice == "Sword" or weaponChoice == "Axe" or weaponChoice == "Dagger" or weaponChoice == "Bow" or weaponChoice =="Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword" or weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice =="The Power of Friendship":
 		
 		print(f"You have chosen to wield {weaponChoice}.")
 		break
+	#if the weapon choise exists, it works, if not, it asks again		
+	
+	else:
+		
+		print("Enter weapon choice as written.")
+		continue
 	
 
 if weaponChoice == "Sword":
@@ -98,7 +107,7 @@ elif weaponChoice == "Bow":
 	
 elif weaponChoice == "Greatsword":
 	playerWeapon = "greatsword"
-
+#Sets up the player weapon
 
 if difficulty == "Easy":
 	
@@ -111,7 +120,7 @@ elif difficulty == "Medium":
 elif difficulty == "Hard":
 	
 	playerHp = 300
-
+#sets up the player hp based on level
 playerWeapon = 15
 
 
@@ -151,6 +160,10 @@ enemyList = [goblin, rock]
 
 
 def enemyDifficulty(difficulty, enemyList):
+	#creates an encounter for the player to fight
+	#it feeds in a list of enemies and randomly gets a value
+	#it finds the enemy with the CR(Challange Rating) equal to the random value
+	#sets that into a list to feed into an encounter for the player to fight
 	for foe in enemyList:
 		
 		if difficulty == "Hard":
@@ -326,8 +339,11 @@ def runCheck(hitCount):
 		return False
 		
 def fight(player, enemy):
+	print()
 	#sets up stats for the fight
 	#all combat is held within the fight function
+	enemyName = enemy.getName()
+	print("An enemy " + enemyName + " approaches")
 	enemyAlive = True
 	playerAlive = True
 	enemyTempHp = enemy.getHp()
