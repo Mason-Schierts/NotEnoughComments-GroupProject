@@ -208,13 +208,14 @@ player = Player(playerName, playerHp, playerWeapon)
 
 #damage calc concept for weapon concept
 def weaponDamage(player):
+	#sets up calculationa and damage of the weapon the player has
 	weapon = player.getWeapon()
 	dmgDealt = 0
 	if weapon == "sword":
 		mindmg = 1
 		maxdmg = 10
 		iterations = 2
-		
+			
 	elif weapon == "axe":
 		mindmg = 1
 		maxdmg = 22
@@ -230,7 +231,8 @@ def weaponDamage(player):
 		maxdmg = 6
 		iterations = random.randint(2, 4)
 	#etc
-	
+	#This also returns the damage based on the weapon variables
+	#calculates the attack damage from the player
 	for i in range(iterations):
 		dmgDealt += random.randint(mindmg, maxdmg)
 	return dmgDealt
@@ -241,8 +243,10 @@ def weaponDamage(player):
 items = {"Health Potion":0, "Strength Potion":0}
 
 def combatEncounter(listEnemy, crCap):
+	#calls for a list of all enemies and a challange rating of the encounter
 	encounterCr = 0
 	encounterList = []
+	#Searches for enemies until a list of enemies equal to the cr is found
 	while encounterCr <= crCap:
 		enemyAdded = listEnemy[random.randint(0, len(listEnemy)-1)]
 		if (enemyAdded.getCr() + encounterCr) > crCap:
@@ -250,20 +254,24 @@ def combatEncounter(listEnemy, crCap):
 		else:
 			encounterList.append(enemyAdded)
 			encounterCr += enemyAdded.getCr()
+	#returns the enemies to be fed into the player to fight
 	return encounterList
 	
 def doCombat(encounter, player):
+	#calls for every enemy in the encounter to be fought back to back
 	for enemy in encounter:
 		print(f"{player.getName()} is attacked by a {enemy.getName()}!")
 		fight(player, enemy)
 	
 def itemCheck(itemDic):
+	#finds what items the player has
 	for key in itemDic:
 		count = 0
 		if itemDic[key] > 0:
 			count += 1
 			print("")
 			print(f"You have {itemDic[key]} {key}(s)")
+	#checks if the player has an item or not and how many
 	if count == 0:
 		print("")
 		print("You have no items, choose a different action.")
@@ -272,6 +280,7 @@ def itemCheck(itemDic):
 		return True
 
 def useItem(dic, player):
+	#calls for the use of an item
 	while True:
 		print("")
 		itemChoice = input("Enter the name of the item you would like to use: ")
