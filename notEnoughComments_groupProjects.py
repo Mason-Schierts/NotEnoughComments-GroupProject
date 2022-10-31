@@ -516,8 +516,8 @@ def __main__():
 		print("")
 	print("Thanks for playing!")
 
-if name == "__main__":
-	main()
+if __name__ == "__main__":
+	__main__()
 
 
 
