@@ -10,6 +10,7 @@ import random
 #imports elements for the program to run
 startTime = time.time()
 
+#Begins running the game
 #player settings for personalization
 runName = input("Name this run: ")
 playerName = input("Name your character: ")
@@ -28,10 +29,12 @@ while True:
 	if difficulty == "Hard" or difficulty == "Easy" or difficulty == "Medium":
 		print("You have selected " + difficulty)
 		#if the player picks a valid option, it breaks out of the loop
+		#valid options are only the words for the difficulty level, description is not included
 		break
 	else:
 		print("Please enter the name as written")
 		#if an invalid option is met, it says so and asks again
+		#continues asking until an option is chosen
 		
 
 if difficulty == "Easy" or difficulty == "Medium" or difficulty == "Hard":
@@ -47,6 +50,8 @@ if difficulty == "Easy" or difficulty == "Medium" or difficulty == "Hard":
 	print("Bow: can do low damage, but also high damage")
 	print("")
 	#prints out what the player can start with bassed on difficulty selected
+	#Presents options only available to the difficulty level
+	#still does not ask for the weapon, just prints out the options
 	
 	
 	if difficulty == "Medium" or difficulty == "Hard":
@@ -68,7 +73,7 @@ if difficulty == "Easy" or difficulty == "Medium" or difficulty == "Hard":
 
 while True:	
 	weaponChoice = input("You will use this weapon for the rest of the game. Choose wisely: ")
-	
+	#Allows player to pick their weapon, double checks that it is available
 	
 	#checks for valid weapon choice by name and difficulty level
 	if (weaponChoice == "Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword") and difficulty == "Easy":
