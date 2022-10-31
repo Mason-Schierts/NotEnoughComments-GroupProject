@@ -8,125 +8,6 @@ start date: 10/24/2022
 import time
 import random
 #imports elements for the program to run
-startTime = time.time()
-
-#Begins running the game
-#player settings for personalization
-runName = input("Name this run: ")
-playerName = input("Name your character: ")
-print("")
-print("Difficulty selection:")
-print("")
-print("Easy: Baby mode. High health, but limited weapon options.")
-print("")
-print("Medium: Standard. Mid-range health, expanded weapon list.")
-print("")
-print("Hard: The dark souls of text-based room-to-room dungeon crawlers. All weapons availible.")
-print("")
-#print statements to ask player what difficulty level they wish to use
-while True:
-	difficulty = input("Enter in a difficuly level: ")
-	if difficulty == "Hard" or difficulty == "Easy" or difficulty == "Medium":
-		print("You have selected " + difficulty)
-		#if the player picks a valid option, it breaks out of the loop
-		#valid options are only the words for the difficulty level, description is not included
-		break
-	else:
-		print("Please enter the name as written")
-		#if an invalid option is met, it says so and asks again
-		#continues asking until an option is chosen
-		
-
-if difficulty == "Easy" or difficulty == "Medium" or difficulty == "Hard":
-	
-	print("Choose your starting weapon:")
-	print("")
-	print("Sword: good average damage")
-	print("")
-	print("Axe: high max damage")
-	print("")
-	print("Dagger: cannot deal low damage, but cannot deal high damage")
-	print("")
-	print("Bow: can do low damage, but also high damage")
-	print("")
-	#prints out what the player can start with bassed on difficulty selected
-	#Presents options only available to the difficulty level
-	#still does not ask for the weapon, just prints out the options
-	
-	
-	if difficulty == "Medium" or difficulty == "Hard":
-	
-		print("Greatsword: High damage, but missing skips your next turn.")
-		print("")
-		print("Alchemist Spoon: Low damage, but start with extra potions.")
-		print("")
-		print("Wand of Mystic Power: Low average damage, but chance to deal insane damage")
-		print("")
-		#all contained within each other so that it asscends and prints all the previous statements
-		if difficulty == "Hard":
-			
-			print("Gun: Bang bang. High damage, reload every other turn")
-			print("")
-			print("Lashing Words: Mock your enemies to death! Deals no damage, but chance to one shot enemies.")
-			print("")
-			print("The Power of Friendship: You have no friends. You deal no damage. The ultimate challenge.")
-
-while True:	
-	weaponChoice = input("You will use this weapon for the rest of the game. Choose wisely: ")
-	#Allows player to pick their weapon, double checks that it is available
-	
-	#checks for valid weapon choice by name and difficulty level
-	if (weaponChoice == "Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword") and difficulty == "Easy":
-		
-		print("Weapon not availible for this difficulty.")
-		continue
-	
-	elif (weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice == "The Power of Friendship") and difficulty != "Hard":
-		
-		print("Weapon not availible for this difficulty.")
-		continue
-	
-	elif weaponChoice == "Sword" or weaponChoice == "Axe" or weaponChoice == "Dagger" or weaponChoice == "Bow" or weaponChoice =="Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword" or weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice =="The Power of Friendship":
-		
-		print(f"You have chosen to wield {weaponChoice}.")
-		break
-	#if the weapon choise exists, it works, if not, it asks again		
-	
-	else:
-		
-		print("Enter weapon choice as written.")
-		continue
-	
-
-if weaponChoice == "Sword":
-	playerWeapon = "sword"
-
-elif weaponChoice == "Axe":
-	playerWeapon = "axe"
-
-elif weaponChoice == "Dagger":
-	playerWeapon = "dagger"
-
-elif weaponChoice == "Bow":
-	playerWeapon = "bow"
-	
-elif weaponChoice == "Greatsword":
-	playerWeapon = "greatsword"
-#Sets up the player weapon
-
-if difficulty == "Easy":
-	
-	playerHp = 700
-
-elif difficulty == "Medium":
-	
-	playerHp = 500
-
-elif difficulty == "Hard":
-	
-	playerHp = 300
-#sets up the player hp based on level
-playerWeapon = 15
 
 
 class Enemy:
@@ -204,11 +85,6 @@ class Player:
 	
 	def setWeapon(self, newWeapon):
 		self.weapon = newWeapon
-
-
-player = Player(playerName, playerHp, playerWeapon)
-#creates a player
-
 
 
 #damage calc concept for weapon concept
@@ -470,30 +346,6 @@ def fight(player, enemy):
 	else:
 		return False	
 
-
-
-#calls a list of enemies in an encounter for a player to fight
-
-	
-	
-#the actual game is contained within one for loop
-#calls different rooms to determine enemy encounters and boss fights
-for i in range(1, 9):
-	if i == 3:
-		pass
-	elif i == 5:
-		pass
-	elif i == 7:
-		pass
-	elif i == 8:
-		pass
-	else:
-		pass
-
-fight(player, goblin)
-
-
-
 def timeInMinutes(start, end):
 	#a clock, finds the time player took to play game
 	timeInSeconds = end - start
@@ -504,26 +356,170 @@ def timeInMinutes(start, end):
 	#returns it for a stat page
 	return f"{minutes}:{seconds}"
 
-#calls for a time check when game ends
-endTime = time.time()
-timeTaken = timeInMinutes(startTime, endTime)
+	#calls for a time check when game ends
+	endTime = time.time()
+	timeTaken = timeInMinutes(startTime, endTime)
 
-#outputs time that the game took
-print(timeTaken)
+def __main__():
+	startTime = time.time()
 
-print("")
-checkFile = input("Save stats as file? y/n: ")
-print("")
-if checkFile == "y":
-	#record various stats
-	#enemies slain, hp lost, hp gained, damage dealt, encounters survived, etc.
-	runStats = open(f"{runName}.txt", "w")
-
-	runStats.write(runName)
-	runStats.write("")
-	runStats.write(f"Time taken: {timeTaken}")
-
-	runStats.close()
-	print("file saved")
+	#Begins running the game
+	#player settings for personalization
+	runName = input("Name this run: ")
+	playerName = input("Name your character: ")
 	print("")
-print("Thanks for playing!")
+	print("Difficulty selection:")
+	print("")
+	print("Easy: Baby mode. High health, but limited weapon options.")
+	print("")
+	print("Medium: Standard. Mid-range health, expanded weapon list.")
+	print("")
+	print("Hard: The dark souls of text-based room-to-room dungeon crawlers. All weapons availible.")
+	print("")
+	#print statements to ask player what difficulty level they wish to use
+	while True:
+		difficulty = input("Enter in a difficuly level: ")
+		if difficulty == "Hard" or difficulty == "Easy" or difficulty == "Medium":
+			print("You have selected " + difficulty)
+			#if the player picks a valid option, it breaks out of the loop
+			#valid options are only the words for the difficulty level, description is not included
+			break
+		else:
+			print("Please enter the name as written")
+			#if an invalid option is met, it says so and asks again
+			#continues asking until an option is chosen
+			
+
+	if difficulty == "Easy" or difficulty == "Medium" or difficulty == "Hard":
+		
+		print("Choose your starting weapon:")
+		print("")
+		print("Sword: good average damage")
+		print("")
+		print("Axe: high max damage")
+		print("")
+		print("Dagger: cannot deal low damage, but cannot deal high damage")
+		print("")
+		print("Bow: can do low damage, but also high damage")
+		print("")
+		#prints out what the player can start with bassed on difficulty selected
+		#Presents options only available to the difficulty level
+		#still does not ask for the weapon, just prints out the options
+		
+		
+		if difficulty == "Medium" or difficulty == "Hard":
+		
+			print("Greatsword: High damage, but missing skips your next turn.")
+			print("")
+			print("Alchemist Spoon: Low damage, but start with extra potions.")
+			print("")
+			print("Wand of Mystic Power: Low average damage, but chance to deal insane damage")
+			print("")
+			#all contained within each other so that it asscends and prints all the previous statements
+			if difficulty == "Hard":
+				
+				print("Gun: Bang bang. High damage, reload every other turn")
+				print("")
+				print("Lashing Words: Mock your enemies to death! Deals no damage, but chance to one shot enemies.")
+				print("")
+				print("The Power of Friendship: You have no friends. You deal no damage. The ultimate challenge.")
+
+	while True:	
+		weaponChoice = input("You will use this weapon for the rest of the game. Choose wisely: ")
+		#Allows player to pick their weapon, double checks that it is available
+		
+		#checks for valid weapon choice by name and difficulty level
+		if (weaponChoice == "Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword") and difficulty == "Easy":
+			
+			print("Weapon not availible for this difficulty.")
+			continue
+		
+		elif (weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice == "The Power of Friendship") and difficulty != "Hard":
+			
+			print("Weapon not availible for this difficulty.")
+			continue
+		
+		elif weaponChoice == "Sword" or weaponChoice == "Axe" or weaponChoice == "Dagger" or weaponChoice == "Bow" or weaponChoice =="Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword" or weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice =="The Power of Friendship":
+			
+			print(f"You have chosen to wield {weaponChoice}.")
+			break
+		#if the weapon choise exists, it works, if not, it asks again		
+		
+		else:
+			
+			print("Enter weapon choice as written.")
+			continue
+		
+
+	if weaponChoice == "Sword":
+		playerWeapon = "sword"
+
+	elif weaponChoice == "Axe":
+		playerWeapon = "axe"
+
+	elif weaponChoice == "Dagger":
+		playerWeapon = "dagger"
+
+	elif weaponChoice == "Bow":
+		playerWeapon = "bow"
+		
+	elif weaponChoice == "Greatsword":
+		playerWeapon = "greatsword"
+	#Sets up the player weapon
+
+	if difficulty == "Easy":
+		
+		playerHp = 700
+
+	elif difficulty == "Medium":
+		
+		playerHp = 500
+
+	elif difficulty == "Hard":
+		
+		playerHp = 300
+	#sets up the player hp based on level
+	
+	
+	player = Player(playerName, playerHp, playerWeapon)
+	#creates a player
+	
+	
+	#the actual game is contained within one for loop
+	#calls different rooms to determine enemy encounters and boss fights
+	for i in range(1, 9):
+		if i == 3:
+			pass
+		elif i == 5:
+			pass
+		elif i == 7:
+			pass
+		elif i == 8:
+			pass
+		else:
+			pass
+
+	print("")
+	checkFile = input("Save stats as file? y/n: ")
+	print("")
+	if checkFile == "y":
+		#record various stats
+		#enemies slain, hp lost, hp gained, damage dealt, encounters survived, etc.
+		runStats = open(f"{runName}.txt", "w")
+
+		runStats.write(runName)
+		runStats.write("")
+		runStats.write(f"Time taken: {timeTaken}")
+
+		runStats.close()
+		print("file saved")
+		print("")
+	print("Thanks for playing!")
+
+if name == "__main__":
+	main()
+
+
+
+
+
