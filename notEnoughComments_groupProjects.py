@@ -524,6 +524,7 @@ if __name__ == "__main__":
 	__main__()
 
 
-
+#this is run on python 3.10.6
+#the code is written in Geany 1.38
 
 
