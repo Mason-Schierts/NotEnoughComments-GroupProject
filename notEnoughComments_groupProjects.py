@@ -119,7 +119,7 @@ def weaponDamage(player):
 
 #creates a dictionary with all obtainable items, with a starting quantity of zero
 #used to display availible items and keep track of which items the player has
-items = {"Health Potion":0, "Strength Potion":0}
+items = {"Health Potion":0, "Strength Potion":0, "Super Health Potion":0}
 
 def combatEncounter(listEnemy, crCap):
 	#calls for a list of all enemies and a challange rating of the encounter
