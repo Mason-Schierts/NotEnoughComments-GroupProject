@@ -36,8 +36,6 @@ class Enemy:
 		self.damage = newDamage
 		
 	
-
-
 #creates example enemies                                   
 goblin = Enemy("Goblin", 25, 10, 1)
 rock = Enemy("Rock Creature", 50, 20, 2)
@@ -446,7 +444,7 @@ def __main__():
 		#if the weapon choise exists, it works, if not, it asks again		
 		
 		else:
-			
+			#asks again by forcing a repeat
 			print("Enter weapon choice as written.")
 			continue
 		
@@ -479,6 +477,9 @@ def __main__():
 		
 		playerHp = 300
 	#sets up the player hp based on level
+	#this makes the game more difficlt as the player has to survive on less health
+	#the boss will also get more health with a higher level
+	#most of the difficulty comes from these two factors
 	
 	
 	player = Player(playerName, playerHp, playerWeapon)
@@ -490,6 +491,7 @@ def __main__():
 	for i in range(1, 9):
 		if i == 3:
 			pass
+			#sets up special rooms (for loot or a bossfight)
 		elif i == 5:
 			pass
 		elif i == 7:
@@ -497,6 +499,7 @@ def __main__():
 		elif i == 8:
 			pass
 		else:
+			#if not a special room, it sets up a normal encounter room.
 			pass
 
 	print("")
@@ -517,6 +520,7 @@ def __main__():
 	print("Thanks for playing!")
 
 if __name__ == "__main__":
+	#runs the main game
 	__main__()
 
 
