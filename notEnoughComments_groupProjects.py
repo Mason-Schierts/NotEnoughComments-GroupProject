@@ -7,6 +7,7 @@ start date: 10/24/2022
 
 import time
 import random
+import os
 #imports elements for the program to run
 
 
@@ -501,7 +502,10 @@ def __main__():
 		else:
 			#if not a special room, it sets up a normal encounter room.
 			pass
-
+		
+		input("Press enter to continue to the next room")
+		os.system('clear')
+		
 	print("")
 	checkFile = input("Save stats as file? y/n: ")
 	print("")
