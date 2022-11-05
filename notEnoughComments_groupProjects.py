@@ -142,6 +142,36 @@ def doCombat(encounter, player):
 	for enemy in encounter:
 		print(f"{player.getName()} is attacked by a {enemy.getName()}!")
 		fight(player, enemy)
+
+def itemRoom(player, itemDic, maxNum):
+	templist = []
+	
+	while True:
+		
+		print("Before you is a chest, open it? y/n")
+		checkYes = input("")
+		
+		if checkYes != "y" and checkYes != "n":
+			print("Invalid input")
+		
+		else:
+			break
+	
+	if checkYes == "y":
+		
+		for key in itemDic:
+			templist.append(key)
+		
+		newItem = templist[random.randint(0, len(templist) - 1)]
+		plusQ = random.randint(1, maxNum)
+		itemDic[newItem] += plusQ
+		print()
+		print(f"{player.getName()} has picked up {plusQ} {newItem}(s)!")
+		print()
+		return True
+	
+	else:
+		return False
 	
 def itemCheck(itemDic):
 	#finds what items the player has
@@ -388,7 +418,7 @@ def __main__():
 			#if an invalid option is met, it says so and asks again
 			#continues asking until an option is chosen
 			
-
+	
 	if difficulty == "Easy" or difficulty == "Medium" or difficulty == "Hard":
 		
 		print("Choose your starting weapon:")
@@ -422,6 +452,8 @@ def __main__():
 				print("Lashing Words: Mock your enemies to death! Deals no damage, but chance to one shot enemies.")
 				print("")
 				print("The Power of Friendship: You have no friends. You deal no damage. The ultimate challenge.")
+
+	playerWeapon = ""
 
 	while True:	
 		weaponChoice = input("You will use this weapon for the rest of the game. Choose wisely: ")
@@ -485,7 +517,7 @@ def __main__():
 	
 	player = Player(playerName, playerHp, playerWeapon)
 	#creates a player
-	
+	itemRoom(player, items)
 	
 	#the actual game is contained within one for loop
 	#calls different rooms to determine enemy encounters and boss fights
