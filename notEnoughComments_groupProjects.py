@@ -143,6 +143,31 @@ def doCombat(encounter, player):
 		print(f"{player.getName()} is attacked by a {enemy.getName()}!")
 		fight(player, enemy)
 
+def itemDrop(enemy, itemDic):
+	
+	templist = []
+	maxNum = (enemy.getCr() * 5) % 2
+	chance1 = random.randint(1, maxNum)
+	chance2 = random.randint(1, 75)
+	
+	if chane1 == chance2:
+		
+		for key in itemDic:
+			templist.append(key)
+		
+		newItem = templist[random.randint(0, len(templist) - 1)]
+		plusQ = random.randint(1, 2)
+		itemDic[newItem] += plusQ
+		
+		print()
+		print(f"{enemy.getName()} dropped {plusQ} {newItem}(s)!")
+		print()
+		
+		return True
+	
+	else:
+		return False
+
 def itemRoom(player, itemDic, maxNum):
 	templist = []
 	
