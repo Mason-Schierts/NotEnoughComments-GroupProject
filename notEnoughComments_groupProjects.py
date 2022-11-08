@@ -144,58 +144,67 @@ def doCombat(encounter, player):
 		fight(player, enemy)
 
 def itemDrop(enemy, itemDic):
-	
+	#feeds in a list of all items and an enemy dropping the item
 	templist = []
 	maxNum = (enemy.getCr() * 5) % 2
 	chance1 = random.randint(1, maxNum)
 	chance2 = random.randint(1, 75)
-	
+	#creates a random chance based on enemy cr to drop an item
 	if chane1 == chance2:
 		
 		for key in itemDic:
 			templist.append(key)
+			#adds all items in game to temporary list
 		
+		#grabs a random item to the player from the temporary list of keys
 		newItem = templist[random.randint(0, len(templist) - 1)]
 		plusQ = random.randint(1, 2)
+		#drops either one or two items
 		itemDic[newItem] += plusQ
+		#changes the item value in the dictionary of items the player has by the amount dropped
 		
 		print()
 		print(f"{enemy.getName()} dropped {plusQ} {newItem}(s)!")
 		print()
-		
+		#prints out that the player got a new item and then returns that the player did get an item
 		return True
 	
 	else:
+		#if they did not drop an item, returns false that the player did not get an item
 		return False
 
 def itemRoom(player, itemDic, maxNum):
 	templist = []
-	
+	#feeds in the player, the dictionary that is their inventory and a max number
 	while True:
-		
+		#asks if player wants to open a chest
 		print("Before you is a chest, open it? y/n")
 		checkYes = input("")
-		
+		#makes sure that the player gives a valid input
 		if checkYes != "y" and checkYes != "n":
 			print("Invalid input")
 		
 		else:
 			break
-	
+	#now that player has a valid input, sees if the player opens the chest or not
 	if checkYes == "y":
-		
+		#creates a list of all items that exist in the game
 		for key in itemDic:
 			templist.append(key)
 		
+		#randomly picks a new item and gives the player the number of items
 		newItem = templist[random.randint(0, len(templist) - 1)]
 		plusQ = random.randint(1, maxNum)
+		#picks a random number of items between 1 and the max
 		itemDic[newItem] += plusQ
+		#adds the items to player inventory and prints out a message saying how many they got
 		print()
 		print(f"{player.getName()} has picked up {plusQ} {newItem}(s)!")
 		print()
 		return True
-	
+		#returns that they opened the chest
 	else:
+		#returns that the player did not open the chest
 		return False
 	
 def itemCheck(itemDic):
