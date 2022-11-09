@@ -570,8 +570,10 @@ def __main__():
 			pass
 		
 		input("Press enter to continue to the next room")
-		os.system('clear')
+		os.system('cls')
 		
+	endTime = time.time()
+	timeTaken = endTime - startTime	
 	print("")
 	checkFile = input("Save stats as file? y/n: ")
 	print("")
