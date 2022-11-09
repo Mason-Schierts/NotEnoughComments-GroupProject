@@ -551,7 +551,7 @@ def __main__():
 	
 	player = Player(playerName, playerHp, playerWeapon)
 	#creates a player
-	itemRoom(player, items)
+	
 	
 	#the actual game is contained within one for loop
 	#calls different rooms to determine enemy encounters and boss fights
