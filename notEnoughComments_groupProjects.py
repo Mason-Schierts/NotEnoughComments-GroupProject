@@ -10,7 +10,7 @@ import random
 import os
 #imports elements for the program to run
 
-class Player:
+class ThePlayer:
 	#creates a class to store the player
 	def __init__(self, name, health, weapon):
 		#defines player stats like health and max damage
@@ -72,9 +72,16 @@ enemyList = [goblin, rock]
 items = {
 			"Health Potion":0,
 			"Strength Potion":0, 
-			"Super Health Potion":0}
+			"Super Health Potion":0,
+			"Potion of resistance":0,
+			"rotten berries":0, #heals 1-2 hp, but also has chance of dealing damage to player by eating
+			"rubber chicken":0, #burns player turn by saying "Squak", using the item, and once again...waisting the player turn
+			
+			#loot table idea, random number generation between 1 and 1000
+			#if number in range of item giver, u get that item, for chicken has to be ONE number
+			}
 
-def weaponChoice(difficuly):
+def weaponChoice(difficulty):
 	
 	if difficulty == "Easy" or difficulty == "Medium" or difficulty == "Hard":
 		
@@ -110,7 +117,7 @@ def weaponChoice(difficuly):
 				print("")
 				print("Lashing Words: Mock your enemies to death! Deals no damage, but chance to one shot enemies.")
 				print("")
-				print("The Power of Friendship: You have no friends. You deal no damage. The ultimate challenge.")
+				print("The Power of errorCodes: E r R o R, kill enemies with your failures")
 
 	while True:	
 		weaponChoice = input("You will use this weapon for the rest of the game. Choose wisely: ")
@@ -122,7 +129,7 @@ def weaponChoice(difficuly):
 			print("Weapon not availible for this difficulty.")
 			continue
 		
-		elif (weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice == "The Power of Friendship") and difficulty != "Hard":
+		elif (weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice == "The Power of errorCodes") and difficulty != "Hard":
 			
 			print("Weapon not availible for this difficulty.")
 			continue
@@ -158,7 +165,7 @@ def weaponChoice(difficuly):
 	
 	return playerWeapon
 
-def weaponDamage(player):
+def weaponDamage(player, modifier = 0):
 	#sets up calculationa and damage of the weapon the player has
 	weapon = player.getWeapon()
 	dmgDealt = 0
@@ -181,6 +188,9 @@ def weaponDamage(player):
 		mindmg = 0
 		maxdmg = 6
 		iterations = random.randint(2, 4)
+	elif weapon == "The Power of errorCodes":
+		mindmg = 1
+		maxdmg = 1 + modifier
 	#etc
 	#This also returns the damage based on the weapon variables
 	#calculates the attack damage from the player
@@ -208,10 +218,10 @@ def combatEncounter(listEnemy, crCap):
 	encounterCr = 0
 	encounterList = []
 	#Searches for enemies until a list of enemies equal to the cr is found
-	while encounterCr <= crCap:
+	while encounterCr < crCap:
 		enemyAdded = listEnemy[random.randint(0, len(listEnemy)-1)]
 		if (enemyAdded.getCr() + encounterCr) > crCap:
-			continue
+			pass
 		else:
 			encounterList.append(enemyAdded)
 			encounterCr += enemyAdded.getCr()
@@ -481,11 +491,11 @@ def fight(player, enemy):
 	#else shows the player as dead
 	return playerAlive
 
-def doCombat(encounter, player):
+def doCombat(encounter, aPlayer):
 	#calls for every enemy in the encounter to be fought back to back
-	for enemy in encounter:
-		print(f"{player.getName()} is attacked by a {enemy.getName()}!")
-		fight(player, enemy)
+	for aEnemy in encounter:
+		print(f"{aPlayer.getName()} is attacked by a {aEnemy.getName()}!")
+		fight(aPlayer, aEnemy)
 
 def bossFight(player):
 	pass
@@ -512,6 +522,7 @@ def __main__():
 	#player settings for personalization
 	runName = input("Name this run: ")
 	playerName = input("Name your character: ")
+	difficulty = ""
 	
 	print("")
 	print("Difficulty selection:")
@@ -562,9 +573,10 @@ def __main__():
 	playerWeapon = weaponChoice(difficulty)
 	
 	#creates a player
-	player = Player(playerName, playerHp, playerWeapon)
+	player = ThePlayer(playerName, playerHp, playerWeapon)
 	
 	
+	crCap = 5
 	
 	#the actual game is contained within one for loop
 	#calls different rooms to determine enemy encounters and boss fights
@@ -580,7 +592,9 @@ def __main__():
 			pass
 		else:
 			#if not a special room, it sets up a normal encounter room.
-			pass
+			combatList = combatEncounter(enemyList, crCap) 
+			crCap += 5
+			doCombat(combatList, player) 
 		
 		input("Press enter to continue to the next room")
 		os.system('cls')
