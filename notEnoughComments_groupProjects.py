@@ -268,7 +268,7 @@ def combatEncounter(listEnemy, crCap):
 	encounterList = []
 	#Searches for enemies until a list of enemies equal to the cr is found
 	while encounterCr < crCap:
-		enemyAdded = listEnemy[random.randint(0, len(listEnemy)-1)]
+		enemyAdded = listEnemy[random.randint(0, len(listEnemy))]
 		if (enemyAdded.getCr() + encounterCr) > crCap:
 			pass
 		else:
@@ -544,31 +544,31 @@ def fight(player, enemy):
 			continue
 		
 		#enemy turn
-		
-		if dodgeCheck(playerHitCount) == False:
-			#checks if the player dodges, if failed, goes through the attack
-			dmgRange = enemy.getDamage()
-			dmgTaken = random.randint(1,dmgRange)
-			#calls the damage from the enemy and deals it to player
-			
-			player.setHp(player.getHp() - dmgTaken)
-			
-			if player.getHp() <= 0:
-				print("")
-				print(f"{player.getName()} has been slain!")
-				playerAlive = False
-				break
-				#if player dies, the death message will be produced and it breaks the loop
+		if enemyTempHp > 0:
+			if dodgeCheck(playerHitCount) == False:
+				#checks if the player dodges, if failed, goes through the attack
+				dmgRange = enemy.getDamage()
+				dmgTaken = random.randint(1,dmgRange)
+				#calls the damage from the enemy and deals it to player
+				
+				player.setHp(player.getHp() - dmgTaken)
+				
+				if player.getHp() <= 0:
+					print("")
+					print(f"{player.getName()} has been slain!")
+					playerAlive = False
+					break
+					#if player dies, the death message will be produced and it breaks the loop
+				
+				else:
+					print("")
+					print(f"{player.getName()} took {dmgTaken} damage and has {player.getHp()} hp left.")
+					#if player is not dead, shows a message with damage taken and remaining hp of player
 			
 			else:
 				print("")
-				print(f"{player.getName()} took {dmgTaken} damage and has {player.getHp()} hp left.")
-				#if player is not dead, shows a message with damage taken and remaining hp of player
-		
-		else:
-			print("")
-			print(f"{player.getName()} dodged the {enemy.getName()}'s attack!")
-			#prints out if a successful dodge
+				print(f"{player.getName()} dodged the {enemy.getName()}'s attack!")
+				#prints out if a successful dodge
 	
 	#fight success
 	#if the player is alive (winning the fight) it returns that the player survived
@@ -676,8 +676,13 @@ def __main__():
 	#creates example enemies                                   
 	goblin = Enemy("Goblin", 25, 10, 1)
 	rock = Enemy("Rock Creature", 50, 20, 2)
+	syntax = Enemy("Syntax Error", 35, 30, 2)
+	golem = Enemy("Golem", 60, 10, 3)
+	lego = Enemy("A single lego brick", 10, 100, 5)
+	runTime = Enemy("Runtime Error", 100, 40, 8)
+	
 
-	enemyList = [goblin, rock]
+	enemyList = [goblin, rock, syntax, golem, lego, runTime]
 
 	
 	crCap = 2
