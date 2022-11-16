@@ -8,7 +8,21 @@ start date: 10/24/2022
 import time
 import random
 import os
+
 #imports elements for the program to run
+#creates a dictionary with all obtainable items, with a starting quantity of zero
+#used to display availible items and keep track of which items the player has
+items = {
+			"Health Potion":0,
+			"Strength Potion":0, 
+			"Super Health Potion":0,
+			"Resistance Potion":0,
+			"Rotten Berries":0, #heals 1-2 hp, but also has chance of dealing damage to player by eating
+			"Rubber Chicken":0, #burns player turn by saying "Squak", using the item, and once again...waisting the player turn
+			
+			#loot table idea, random number generation between 1 and 1000
+			#if number in range of item giver, u get that item, for chicken has to be ONE number
+			}
 
 class ThePlayer:
 	#creates a class to store the player
@@ -26,7 +40,7 @@ class ThePlayer:
 	
 	
 	#if weapon then change otherwise change all weapon to damage
-	def getDamage(self):
+	def getWeapon(self):
 		return self.weapon
 	#Setters to change the remaining hp of player
 	#second one sets new damage for the player in case they get a new weapon	
@@ -60,26 +74,6 @@ class Enemy:
 	
 	def setDamage(self, newDamage):
 		self.damage = newDamage
-			
-#creates example enemies                                   
-goblin = Enemy("Goblin", 25, 10, 1)
-rock = Enemy("Rock Creature", 50, 20, 2)
-
-enemyList = [goblin, rock]
-
-#creates a dictionary with all obtainable items, with a starting quantity of zero
-#used to display availible items and keep track of which items the player has
-items = {
-			"Health Potion":0,
-			"Strength Potion":0, 
-			"Super Health Potion":0,
-			"Potion of resistance":0,
-			"rotten berries":0, #heals 1-2 hp, but also has chance of dealing damage to player by eating
-			"rubber chicken":0, #burns player turn by saying "Squak", using the item, and once again...waisting the player turn
-			
-			#loot table idea, random number generation between 1 and 1000
-			#if number in range of item giver, u get that item, for chicken has to be ONE number
-			}
 
 def weaponChoice(difficulty):
 	
@@ -134,7 +128,7 @@ def weaponChoice(difficulty):
 			print("Weapon not availible for this difficulty.")
 			continue
 		
-		elif weaponChoice == "Sword" or weaponChoice == "Axe" or weaponChoice == "Dagger" or weaponChoice == "Bow" or weaponChoice =="Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword" or weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice =="The Power of Friendship":
+		elif weaponChoice == "Sword" or weaponChoice == "Axe" or weaponChoice == "Dagger" or weaponChoice == "Bow" or weaponChoice =="Wand of Mystic Power" or weaponChoice == "Alchemist Spoon" or weaponChoice == "Greatsword" or weaponChoice == "Gun" or weaponChoice == "Lashing Words" or weaponChoice =="The Power of errorCodes":
 			
 			print(f"You have chosen to wield {weaponChoice}.")
 			break
@@ -162,10 +156,27 @@ def weaponChoice(difficulty):
 	elif weaponChoice == "Greatsword":
 		playerWeapon = "greatsword"
 	#Sets up the player weapon
+	elif weaponChoice == "Alchemist Spoon":
+		playerWeapon = "spoon"
+	
+	elif weaponChoice == "Wand of Mystic Power":
+		playerWeapon = "wand"
+	
+	elif weaponChoice == "Gun":
+		playerWeapon = "gun"
+	
+	elif weaponChoice == "Lashing Words":
+		playerWeapon = "words"
+	
+	elif weaponChoice == "The Power of errorCodes":
+		playerWeapon = "error"
+
+	
+	
 	
 	return playerWeapon
 
-def weaponDamage(player, modifier = 0):
+def weaponDamage(player, modifier):
 	#sets up calculationa and damage of the weapon the player has
 	weapon = player.getWeapon()
 	dmgDealt = 0
@@ -188,14 +199,52 @@ def weaponDamage(player, modifier = 0):
 		mindmg = 0
 		maxdmg = 6
 		iterations = random.randint(2, 4)
-	elif weapon == "The Power of errorCodes":
+	
+	elif weapon == "greatsword":
+		mindmg = 5
+		maxdmg = 20 + modifier
+		iterations = 1
+	
+	elif weapon == "spoon":
+		mindmg = 1
+		maxdmg = 5 + modifier
+		iterations = 1
+	
+	elif weapon == "wand":
+		mindmg = 0
+		maxdmg = 15 + modifier
+		iterations = 1
+		if random.randint(1, 20) == 20:
+			mindmg = 25
+			maxdmg = 50
+	
+	elif weapon == "gun":
+		mindmg = 5
+		maxdmg = 19 + modifier
+		iterations = 2
+	
+	elif weapon == "words":
+		mindmg = 0
+		maxdmg = 0 + modifier
+		iterations = 1
+		
+		if random.randint(1, 20) == 20:
+			mindmg = 1000
+			maxdmg = 2000
+			print("woah man, you hurt its feelings!")
+		
+	
+	elif weapon == "error":
 		mindmg = 1
 		maxdmg = 1 + modifier
+		iterations = 1
 	#etc
 	#This also returns the damage based on the weapon variables
 	#calculates the attack damage from the player
 	for i in range(iterations):
 		dmgDealt += random.randint(mindmg, maxdmg)
+		print()
+		print(f"{dmgDealt}! damage")
 	return dmgDealt
 
 def enemyDifficulty(difficulty, enemyList):
@@ -231,26 +280,45 @@ def combatEncounter(listEnemy, crCap):
 def itemDrop(enemy, itemDic):
 	#feeds in a list of all items and an enemy dropping the item
 	templist = []
-	maxNum = (enemy.getCr() * 5) % 2
-	chance1 = random.randint(1, maxNum)
+	
+	chance1 = random.randint(1, 10)
 	chance2 = random.randint(1, 75)
 	#creates a random chance based on enemy cr to drop an item
-	if chane1 == chance2:
+	if chance1 == chance2:
 		
-		for key in itemDic:
-			templist.append(key)
-			#adds all items in game to temporary list
+		randCheck = random.randint(1,1000)
 		
-		#grabs a random item to the player from the temporary list of keys
+		if randCheck < 300:
+			templist = ["Rotten Berries"]
+			
+		elif randCheck < 700:
+			templist = ["Health Potion", "Strength Potion", "Resistance Potion"]
+		
+		elif randCheck <= 999:
+			templist = ["Health Potion", "Strength Potion", "Resistance Potion", "Super Health Potion"]
+			
+		elif randCheck == 1000:
+			templist = ["Rubber Chicken"]
+			
+			
+		#randomly picks a new item and gives the player the number of items
 		newItem = templist[random.randint(0, len(templist) - 1)]
 		plusQ = random.randint(1, 2)
-		#drops either one or two items
+		if randCheck < 100:
+			plusQ += 3
+		#picks a random number of items between 1 and the max
 		itemDic[newItem] += plusQ
 		#changes the item value in the dictionary of items the player has by the amount dropped
+		if newItem == "Rotten Berries":
+			print()
+			print(f"{enemy.getName()} dropped {plusQ} {newItem}!")
+			print()
+			
+		else:
+			print()
+			print(f"{enemy.getName()} dropped {plusQ} {newItem}(s)!")
+			print()
 		
-		print()
-		print(f"{enemy.getName()} dropped {plusQ} {newItem}(s)!")
-		print()
 		#prints out that the player got a new item and then returns that the player did get an item
 		return True
 	
@@ -274,12 +342,26 @@ def itemRoom(player, itemDic, maxNum):
 	#now that player has a valid input, sees if the player opens the chest or not
 	if checkYes == "y":
 		#creates a list of all items that exist in the game
-		for key in itemDic:
-			templist.append(key)
+		randCheck = random.randint(1,1000)
 		
+		if randCheck < 100:
+			templist = ["Rotten Berries"]
+			
+		elif randCheck < 700:
+			templist = ["Health Potion", "Strength Potion", "Resistance Potion"]
+		
+		elif randCheck <= 999:
+			templist = ["Health Potion", "Strength Potion", "Resistance Potion", "Super Health Potion"]
+			
+		elif randCheck == 1000:
+			templist = ["Rubber Chicken"]
+			
+			
 		#randomly picks a new item and gives the player the number of items
 		newItem = templist[random.randint(0, len(templist) - 1)]
 		plusQ = random.randint(1, maxNum)
+		if randCheck < 100:
+			plusQ += 3
 		#picks a random number of items between 1 and the max
 		itemDic[newItem] += plusQ
 		#adds the items to player inventory and prints out a message saying how many they got
@@ -327,9 +409,9 @@ def useItem(dic, player):
 	return f"{player.getName()} used {itemChoice}."
 
 def dodgeCheck(hitCount):
-	upBound = 15
+	upBound = 20
 	if hitCount == 0:
-		upBound = 15
+		upBound = 20
 	#checks if the player has dodged recently
 		
 	else:
@@ -375,7 +457,7 @@ def runCheck(hitCount):
 	
 	else:
 		return False
-		
+	
 def fight(player, enemy):
 	print()
 	#sets up stats for the fight
@@ -387,6 +469,7 @@ def fight(player, enemy):
 	enemyTempHp = enemy.getHp()
 	enemyHitCount = 0
 	playerHitCount = 0
+	modifier = 0
 	#sets hitcounts for dodge checks
 	#gets hp of enemy stat block, but does not edit the enemy
 	#this is done so that multiple enemies can be fed into an encounter
@@ -400,18 +483,19 @@ def fight(player, enemy):
 		action = input(f"What will {player.getName()} do? (attack, item, run): ")
 		#asks input from player for their action
 		if action == "attack":
-			dmgRange = player.getDamage()
-		#if an attack is called, it calls the max damage of the player	
+			
+			
 			if dodgeCheck(enemyHitCount) == False:	
 			#calls a dodge check to see if the enemy dodges
 				
-				enemyTempHp -= random.randint(1,dmgRange)
+				enemyTempHp -= weaponDamage(player, modifier)
 				enemyHitCount += 1
 				#if the enemy does not, it deals damage and ups hitcount for later dodge checks
 				
 				if enemyTempHp <= 0:
 					print("")
 					print(f"The {enemy.getName()} has been slain!")
+					itemDrop(enemy, items)
 					enemyAlive = False
 				#checks if the enemy has been killed by the attack
 				#if yes, produces a kill message, if not, produces a remaining hp message
@@ -478,12 +562,12 @@ def fight(player, enemy):
 			
 			else:
 				print("")
-				print(f"{playerName} took {dmgTaken} damage and has {player.getHp()} hp left.")
+				print(f"{player.getName()} took {dmgTaken} damage and has {player.getHp()} hp left.")
 				#if player is not dead, shows a message with damage taken and remaining hp of player
 		
 		else:
 			print("")
-			print(f"{playerName} dodged the {enemy.getName()}'s attack!")
+			print(f"{player.getName()} dodged the {enemy.getName()}'s attack!")
 			#prints out if a successful dodge
 	
 	#fight success
@@ -572,29 +656,51 @@ def __main__():
 	#calls a function for the player to choose their weapon
 	playerWeapon = weaponChoice(difficulty)
 	
+	if playerWeapon == "spoon":
+		spoonPotions = ["Health Potion", "Strength Potion", "Resistance Potion"]
+		for i in range(2):
+			items[spoonPotions[random.randint(0, len(spoonPotions) - 1)]] += 1
+	
+	#Global Variabls
+	totalDmgDealt = 0
+	totalDmgTaken = 0
+	totalItemsUsed = 0
+	totalEnemiesSlain = 0
+	totalRoomsDone = 0
+	
+	
 	#creates a player
 	player = ThePlayer(playerName, playerHp, playerWeapon)
 	
 	
-	crCap = 5
+	#creates example enemies                                   
+	goblin = Enemy("Goblin", 25, 10, 1)
+	rock = Enemy("Rock Creature", 50, 20, 2)
+
+	enemyList = [goblin, rock]
+
+	
+	crCap = 2
 	
 	#the actual game is contained within one for loop
 	#calls different rooms to determine enemy encounters and boss fights
 	for i in range(1, 9):
 		if i == 3:
-			pass
+			itemRoom(player, items, 2)
 			#sets up special rooms (for loot or a bossfight)
 		elif i == 5:
-			pass
+			itemRoom(player, items, 4)
 		elif i == 7:
-			pass
+			itemRoom(player, items, 6)
 		elif i == 8:
 			pass
 		else:
 			#if not a special room, it sets up a normal encounter room.
 			combatList = combatEncounter(enemyList, crCap) 
-			crCap += 5
+			crCap += 3
 			doCombat(combatList, player) 
+		
+		totalRoomsDone += 1
 		
 		input("Press enter to continue to the next room")
 		os.system('cls')
