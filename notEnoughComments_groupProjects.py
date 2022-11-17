@@ -31,14 +31,28 @@ class ThePlayer:
 		self.name = name
 		self.hp = health
 		self.weapon = weapon
+		self.modifier = 0
+		self.resist = 0
 		#Playername is for refrencing the player in prompts
 		#damage is max damage that the player CAN deal, not guarenteed
 	def getName(self):
 		return self.name
+	
 	def getHp(self):
 		return self.hp
 	
+	def getMod(self):
+		return self.modifier
 	
+	def setMod(self, newMod):
+		self.modifier = newMod
+		
+	
+	def getArmor(self):
+		return self.modifier
+	
+	def setArmor(self, newArmor):
+		self.resist = newArmor
 	#if weapon then change otherwise change all weapon to damage
 	def getWeapon(self):
 		return self.weapon
@@ -392,21 +406,47 @@ def itemCheck(itemDic):
 
 def useItem(dic, player):
 	#calls for the use of an item
+	
 	while True:
 		print("")
 		itemChoice = input("Enter the name of the item you would like to use: ")
 		if itemChoice in dic.keys():
 			if itemChoice == "Health Potion":
-				#do hp pot
+				player.setHp(player.getHp() + random.randint(20,40))
 				break
 			elif itemChoice == "Strength Potion":
-				#do str pot
+				player.setMod(player.getMod() + 5)
+				break
+			elif itemChoice == "Super Health Potion":	
+				player.setHp(player.getHp() + random.randint(60,100))
+				break
+			elif itemChoice == "Rotten Berries":
+				if random.randint(1,4) == random.randint(1,4):
+					newHp = player.getHp() + random.randint(1,5)
+					player.setHp(newHp)
+					print()
+					print(f"You eat the berries. They taste off, but you feel slightly better. Healed {newHp}")
+				else:
+					player.setHp(player.getHp() - random.randint(1,5))
+					print()
+					print("That was not the best idea. Some hp has been lost.")
+				break	
+			
+			elif itemChoice == "Rubber Chicken":	
+				print()
+				print("The chicken squawks and dissapears")
+				break
+				
+			elif itemChoice == "Resistance Potion":
+				player.setArmor(player.getArmor() + 5)
+				print()
+				print("A glowing aura surrounds you. You feel safer.")
 				break
 		else:
 			print("")
 			print("Enter item name as seen above.")
 		
-	return f"{player.getName()} used {itemChoice}."
+
 
 def dodgeCheck(hitCount):
 	upBound = 20
@@ -469,7 +509,7 @@ def fight(player, enemy):
 	enemyTempHp = enemy.getHp()
 	enemyHitCount = 0
 	playerHitCount = 0
-	modifier = 0
+	
 	#sets hitcounts for dodge checks
 	#gets hp of enemy stat block, but does not edit the enemy
 	#this is done so that multiple enemies can be fed into an encounter
@@ -478,6 +518,7 @@ def fight(player, enemy):
 	while enemyAlive:
 		#used to break when the enemy dies to end the fight
 		
+		modifier = player.getMod()
 		#player turn
 		print("")
 		action = input(f"What will {player.getName()} do? (attack, item, run): ")
@@ -504,6 +545,7 @@ def fight(player, enemy):
 					print("")
 					print(f"The enemy has {enemyTempHp} health left")
 				
+				player.setMod(0)
 			#result of dodge check being True means they dodged
 			else:
 				#resets hitcount to make dodges harder again
@@ -548,9 +590,15 @@ def fight(player, enemy):
 			if dodgeCheck(playerHitCount) == False:
 				#checks if the player dodges, if failed, goes through the attack
 				dmgRange = enemy.getDamage()
-				dmgTaken = random.randint(1,dmgRange)
+				dmgTaken = random.randint(1,dmgRange) - player.getArmor()
+				if dmgTaken < 0:
+					dmgTaken = 0
 				#calls the damage from the enemy and deals it to player
 				
+				if player.getArmor() > 0:
+					print()
+					print("The defense aura sputters and fades.")
+					
 				player.setHp(player.getHp() - dmgTaken)
 				
 				if player.getHp() <= 0:
@@ -564,6 +612,7 @@ def fight(player, enemy):
 					print("")
 					print(f"{player.getName()} took {dmgTaken} damage and has {player.getHp()} hp left.")
 					#if player is not dead, shows a message with damage taken and remaining hp of player
+				player.setArmor(0)
 			
 			else:
 				print("")
