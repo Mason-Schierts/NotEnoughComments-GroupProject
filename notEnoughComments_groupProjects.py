@@ -268,7 +268,7 @@ def combatEncounter(listEnemy, crCap):
 	encounterList = []
 	#Searches for enemies until a list of enemies equal to the cr is found
 	while encounterCr < crCap:
-		enemyAdded = listEnemy[random.randint(0, len(listEnemy))]
+		enemyAdded = listEnemy[random.randint(0, (len(listEnemy) - 1))]
 		if (enemyAdded.getCr() + encounterCr) > crCap:
 			pass
 		else:
