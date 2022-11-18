@@ -737,7 +737,7 @@ def __main__():
 	
 	#the actual game is contained within one for loop
 	#calls different rooms to determine enemy encounters and boss fights
-	for i in range(1, 9):
+	for i in range(1, 2):
 		if i == 3:
 			itemRoom(player, items, 2)
 			#sets up special rooms (for loot or a bossfight)
@@ -752,6 +752,7 @@ def __main__():
 			combatList = combatEncounter(enemyList, crCap) 
 			crCap += 3
 			doCombat(combatList, player) 
+			
 		
 		statsDic["Rooms Cleared:"] += 1
 		
@@ -759,7 +760,7 @@ def __main__():
 		os.system('cls')
 		
 	endTime = time.time()
-	timeTaken = endTime - startTime	
+	timeTaken = timeInMinutes(startTime, endTime)
 	print("")
 	checkFile = input("Save stats as file? y/n: ")
 	print("")
@@ -768,12 +769,19 @@ def __main__():
 		#enemies slain, hp lost, hp gained, damage dealt, encounters survived, etc.
 		runStats = open(f"{runName}.txt", "w")
 
-		runStats.write(runName)
-		runStats.write("")
-		runStats.write(f"Time taken: {timeTaken}")
+		runStats.write(f"____________{runName}____________" + "\n")
+		
+		runStats.write("\n")
+		runStats.write("{:20s} {:4s}".format("Character Name:", player.getName()) + "\n")
+		runStats.write("{:20s} {:4s}".format("Time taken:", timeTaken) + "\n")
+		
 		for key in statsDic:
-			runStats.write("{:20s} {:4f}".format(key, statsDic[key]))
-
+			
+			try:
+				runStats.write("{:17s} {:4d}".format(key, statsDic[key]) + "\n")
+			except:
+				runStats.write("{:20s} {:4s}".format(key, statsDic[key]) + "\n")
+				
 		runStats.close()
 		print("file saved")
 		print("")
