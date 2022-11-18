@@ -755,7 +755,7 @@ def __main__():
 			crCap += 3
 			doCombat(combatList, player) 
 		
-		totalRoomsDone += 1
+		statsDic["Rooms Cleared:"] += 1
 		
 		input("Press enter to continue to the next room")
 		os.system('cls')
