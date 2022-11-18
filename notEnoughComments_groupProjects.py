@@ -390,19 +390,17 @@ def itemRoom(player, itemDic, maxNum):
 	
 def itemCheck(itemDic):
 	#finds what items the player has
+	items = False
 	for key in itemDic:
-		count = 0
 		if itemDic[key] > 0:
-			count += 1
+			items = True
 			print("")
 			print(f"You have {itemDic[key]} {key}(s)")
 	#checks if the player has an item or not and how many
-	if count == 0:
+	if items == False:
 		print("")
 		print("You have no items, choose a different action.")
-		return False
-	else:
-		return True
+	return items
 
 def useItem(dic, player):
 	#calls for the use of an item
