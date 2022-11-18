@@ -445,8 +445,6 @@ def useItem(dic, player):
 		else:
 			print("")
 			print("Enter item name as seen above.")
-		
-
 
 def dodgeCheck(hitCount):
 	upBound = 20
@@ -538,6 +536,7 @@ def fight(player, enemy):
 					print(f"The {enemy.getName()} has been slain!")
 					itemDrop(enemy, items)
 					enemyAlive = False
+
 				#checks if the enemy has been killed by the attack
 				#if yes, produces a kill message, if not, produces a remaining hp message
 				
@@ -710,12 +709,14 @@ def __main__():
 		for i in range(2):
 			items[spoonPotions[random.randint(0, len(spoonPotions) - 1)]] += 1
 	
-	#Global Variabls
-	totalDmgDealt = 0
-	totalDmgTaken = 0
-	totalItemsUsed = 0
-	totalEnemiesSlain = 0
-	totalRoomsDone = 0
+	statsDic = {
+				"Enemies Slain:":0,
+				"Damage Dealt:":0,
+				"Items Used:":0,
+				"Damage Taken:":0,
+				"Rooms Cleared:":0,
+				"Boss defeated?":"No"
+				}
 	
 	
 	#creates a player
@@ -772,6 +773,8 @@ def __main__():
 		runStats.write(runName)
 		runStats.write("")
 		runStats.write(f"Time taken: {timeTaken}")
+		for key in statsDic:
+			runStats.write("{:20s} {:4f}".format(key, statsDic[key]))
 
 		runStats.close()
 		print("file saved")
