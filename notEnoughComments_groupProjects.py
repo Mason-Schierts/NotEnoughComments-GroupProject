@@ -24,6 +24,19 @@ items = {
 			#if number in range of item giver, u get that item, for chicken has to be ONE number
 			}
 
+statsDic = {
+				"Difficulty:": "",
+				"Weapon:": "",
+				"Remaining Hp:": 0,
+				"Enemies Slain:":0,
+				"Damage Dealt:":0,
+				"Items Used:":0,
+				"Damage Taken:":0,
+				"Rooms Cleared:":0,
+				"Boss defeated?":"No"
+				
+				}
+
 class ThePlayer:
 	#creates a class to store the player
 	def __init__(self, name, health, weapon):
@@ -154,7 +167,7 @@ def weaponChoice(difficulty):
 			continue
 	
 	playerWeapon = ""	
-
+	statsDic["Weapon:"] = weaponChoice
 	if weaponChoice == "Sword":
 		playerWeapon = "sword"
 
@@ -409,6 +422,7 @@ def useItem(dic, player):
 		print("")
 		itemChoice = input("Enter the name of the item you would like to use: ")
 		if itemChoice in dic.keys():
+			statsDic["Items Used:"] += 1
 			if itemChoice == "Health Potion":
 				player.setHp(player.getHp() + random.randint(20,40))
 				break
@@ -428,11 +442,11 @@ def useItem(dic, player):
 					player.setHp(player.getHp() - random.randint(1,5))
 					print()
 					print("That was not the best idea. Some hp has been lost.")
-				break	
-			
+					break
 			elif itemChoice == "Rubber Chicken":	
 				print()
 				print("The chicken squawks and dissapears")
+				
 				break
 				
 			elif itemChoice == "Resistance Potion":
@@ -443,6 +457,7 @@ def useItem(dic, player):
 		else:
 			print("")
 			print("Enter item name as seen above.")
+		
 
 def dodgeCheck(hitCount):
 	upBound = 20
@@ -525,8 +540,10 @@ def fight(player, enemy):
 			if dodgeCheck(enemyHitCount) == False:	
 			#calls a dodge check to see if the enemy dodges
 				
-				enemyTempHp -= weaponDamage(player, modifier)
+				hitDmg= weaponDamage(player, modifier)
+				enemyTempHp -= hitDmg
 				enemyHitCount += 1
+				statsDic["Damage Dealt:"] += hitDmg
 				#if the enemy does not, it deals damage and ups hitcount for later dodge checks
 				
 				if enemyTempHp <= 0:
@@ -597,6 +614,7 @@ def fight(player, enemy):
 					print("The defense aura sputters and fades.")
 					
 				player.setHp(player.getHp() - dmgTaken)
+				statsDic["Damage Taken:"] += dmgTaken
 				
 				if player.getHp() <= 0:
 					print("")
@@ -615,6 +633,8 @@ def fight(player, enemy):
 				print("")
 				print(f"{player.getName()} dodged the {enemy.getName()}'s attack!")
 				#prints out if a successful dodge
+		else:
+			statsDic["Enemies Slain:"] += 1
 	
 	#fight success
 	#if the player is alive (winning the fight) it returns that the player survived
@@ -682,7 +702,7 @@ def __main__():
 			#if an invalid option is met, it says so and asks again
 			#continues asking until an option is chosen
 			
-	
+	statsDic["Difficulty:"] = difficulty
 	#sets up the player hp based on level
 	#this makes the game more difficlt as the player has to survive on less health
 	#the boss will also get more health with a higher level
@@ -707,14 +727,7 @@ def __main__():
 		for i in range(2):
 			items[spoonPotions[random.randint(0, len(spoonPotions) - 1)]] += 1
 	
-	statsDic = {
-				"Enemies Slain:":0,
-				"Damage Dealt:":0,
-				"Items Used:":0,
-				"Damage Taken:":0,
-				"Rooms Cleared:":0,
-				"Boss defeated?":"No"
-				}
+
 	
 	
 	#creates a player
@@ -765,6 +778,9 @@ def __main__():
 	checkFile = input("Save stats as file? y/n: ")
 	print("")
 	if checkFile == "y":
+		
+		statsDic["Remaining Hp:"] = player.getHp()
+		
 		#record various stats
 		#enemies slain, hp lost, hp gained, damage dealt, encounters survived, etc.
 		runStats = open(f"{runName}.txt", "w")
@@ -778,9 +794,9 @@ def __main__():
 		for key in statsDic:
 			
 			try:
-				runStats.write("{:17s} {:4d}".format(key, statsDic[key]) + "\n")
+				runStats.write("{:17s} {:6d}".format(key, statsDic[key]) + "\n")
 			except:
-				runStats.write("{:20s} {:4s}".format(key, statsDic[key]) + "\n")
+				runStats.write("{:20s} {:6s}".format(key, statsDic[key]) + "\n")
 				
 		runStats.close()
 		print("file saved")
