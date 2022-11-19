@@ -27,14 +27,13 @@ items = {
 statsDic = {
 				"Difficulty:": "",
 				"Weapon:": "",
-				"Remaining Hp:": 0,
-				"Enemies Slain:":0,
-				"Damage Dealt:":0,
-				"Items Used:":0,
 				"Damage Taken:":0,
+				"Remaining Hp:": 0,
+				"Damage Dealt:":0,
+				"Enemies Slain:":0,
+				"Items Used:":0,
 				"Rooms Cleared:":0,
 				"Boss defeated?":"No"
-				
 				}
 
 class ThePlayer:
@@ -309,13 +308,13 @@ def itemDrop(enemy, itemDic):
 	templist = []
 	
 	chance1 = random.randint(1, 10)
-	chance2 = random.randint(1, 75)
+	chance2 = random.randint(1, 10)
 	#creates a random chance based on enemy cr to drop an item
 	if chance1 == chance2:
 		
 		randCheck = random.randint(1,1000)
 		
-		if randCheck < 300:
+		if randCheck < 500:
 			templist = ["Rotten Berries"]
 			
 		elif randCheck < 700:
@@ -439,7 +438,9 @@ def useItem(dic, player):
 					print()
 					print(f"You eat the berries. They taste off, but you feel slightly better. Healed {newHp}")
 				else:
-					player.setHp(player.getHp() - random.randint(1,5))
+					hpLost = player.getHp() - random.randint(1,5)
+					player.setHp(hpLost)
+					statsDic["Damage Taken:"] += hpLost
 					print()
 					print("That was not the best idea. Some hp has been lost.")
 					break
@@ -457,7 +458,6 @@ def useItem(dic, player):
 		else:
 			print("")
 			print("Enter item name as seen above.")
-		
 
 def dodgeCheck(hitCount):
 	upBound = 20
@@ -609,9 +609,7 @@ def fight(player, enemy):
 					dmgTaken = 0
 				#calls the damage from the enemy and deals it to player
 				
-				if player.getArmor() > 0:
-					print()
-					print("The defense aura sputters and fades.")
+				
 					
 				player.setHp(player.getHp() - dmgTaken)
 				statsDic["Damage Taken:"] += dmgTaken
@@ -626,6 +624,9 @@ def fight(player, enemy):
 				else:
 					print("")
 					print(f"{player.getName()} took {dmgTaken} damage and has {player.getHp()} hp left.")
+					if player.getArmor() > 0:
+						print("")
+						print("The defense aura sputters and fades.")
 					#if player is not dead, shows a message with damage taken and remaining hp of player
 				player.setArmor(0)
 			
@@ -643,9 +644,15 @@ def fight(player, enemy):
 
 def doCombat(encounter, aPlayer):
 	#calls for every enemy in the encounter to be fought back to back
+	playerAlive = True
 	for aEnemy in encounter:
 		print(f"{aPlayer.getName()} is attacked by a {aEnemy.getName()}!")
-		fight(aPlayer, aEnemy)
+		if fight(aPlayer, aEnemy) == False:
+			playerAlive = False
+			break
+		else:
+			pass
+	return playerAlive
 
 def bossFight(player):
 	pass
@@ -750,7 +757,8 @@ def __main__():
 	
 	#the actual game is contained within one for loop
 	#calls different rooms to determine enemy encounters and boss fights
-	for i in range(1, 2):
+	playerAlive = True
+	for i in range(1, 9):
 		if i == 3:
 			itemRoom(player, items, 2)
 			#sets up special rooms (for loot or a bossfight)
@@ -764,13 +772,23 @@ def __main__():
 			#if not a special room, it sets up a normal encounter room.
 			combatList = combatEncounter(enemyList, crCap) 
 			crCap += 3
-			doCombat(combatList, player) 
+			if doCombat(combatList, player) == False:
+				playerAlive = False
+				break
+			else:
+				pass
 			
 		
 		statsDic["Rooms Cleared:"] += 1
 		
 		input("Press enter to continue to the next room")
 		os.system('cls')
+	
+	print()	
+	if playerAlive == False:
+		print("Better luck next time!")
+	else:
+		print("Congratulations!")
 		
 	endTime = time.time()
 	timeTaken = timeInMinutes(startTime, endTime)
@@ -778,6 +796,9 @@ def __main__():
 	checkFile = input("Save stats as file? y/n: ")
 	print("")
 	if checkFile == "y":
+		
+		if player.getHp < 0:
+			player.setHp(0)
 		
 		statsDic["Remaining Hp:"] = player.getHp()
 		
@@ -788,15 +809,15 @@ def __main__():
 		runStats.write(f"____________{runName}____________" + "\n")
 		
 		runStats.write("\n")
-		runStats.write("{:20s} {:4s}".format("Character Name:", player.getName()) + "\n")
-		runStats.write("{:20s} {:4s}".format("Time taken:", timeTaken) + "\n")
+		runStats.write("{:20s} {:<6s}".format("Character Name:", player.getName()) + "\n")
+		runStats.write("{:20s} {:<6s}".format("Time taken:", timeTaken) + "\n")
 		
 		for key in statsDic:
 			
 			try:
-				runStats.write("{:17s} {:6d}".format(key, statsDic[key]) + "\n")
+				runStats.write("{:<20s} {:<6d}".format(key, statsDic[key]) + "\n")
 			except:
-				runStats.write("{:20s} {:6s}".format(key, statsDic[key]) + "\n")
+				runStats.write("{:<20s} {:<6s}".format(key, statsDic[key]) + "\n")
 				
 		runStats.close()
 		print("file saved")
