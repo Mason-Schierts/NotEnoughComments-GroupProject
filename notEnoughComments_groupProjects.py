@@ -67,7 +67,7 @@ class ThePlayer:
 		self.reload = torf
 	
 	def getArmor(self):
-		return self.modifier
+		return self.resist
 	
 	def setArmor(self, newArmor):
 		self.resist = newArmor
@@ -144,7 +144,9 @@ def weaponChoice(difficulty):
 				print("Lashing Words: Mock your enemies to death! Deals no damage, but chance to one shot enemies.")
 				print("")
 				print("The Power of errorCodes: E r R o R, kill enemies with your failures")
-
+	print()
+	print()
+	time.sleep(1)
 	while True:	
 		weaponChoice = input("You will use this weapon for the rest of the game. Choose wisely: ")
 		#Allows player to pick their weapon, double checks that it is available
@@ -212,47 +214,48 @@ def weaponDamage(player, modifier):
 	#sets up calculationa and damage of the weapon the player has
 	weapon = player.getWeapon()
 	dmgDealt = 0
+	totalDmg = 0
 	if weapon == "sword":
 		mindmg = 1
-		maxdmg = 10
+		maxdmg = 15
 		iterations = 2
 			
 	elif weapon == "axe":
 		mindmg = 1
-		maxdmg = 22
+		maxdmg = 30
 		iterations = 1
 		
 	elif weapon == "dagger":
-		mindmg = 5
-		maxdmg = 7
+		mindmg = 7
+		maxdmg = 10
 		iterations = 1
 		
 	elif weapon == "bow":
 		mindmg = 0
-		maxdmg = 6
+		maxdmg = 10
 		iterations = random.randint(2, 4)
 	
 	elif weapon == "greatsword":
-		mindmg = 5
+		mindmg = 10
 		maxdmg = 20 + modifier
 		iterations = 1
 	
 	elif weapon == "spoon":
 		mindmg = 1
 		maxdmg = 5 + modifier
-		iterations = 1
+		iterations = 4
 	
 	elif weapon == "wand":
 		mindmg = 0
 		maxdmg = 15 + modifier
 		iterations = 1
-		if random.randint(1, 20) == 20:
-			mindmg = 25
-			maxdmg = 50
+		if random.randint(1, 10) == 10:
+			mindmg = 30
+			maxdmg = 60
 	
 	elif weapon == "gun":
 		mindmg = 5
-		maxdmg = 19 + modifier
+		maxdmg = 30 + modifier
 		iterations = 2
 		player.setReload(True)
 	
@@ -275,11 +278,12 @@ def weaponDamage(player, modifier):
 	#This also returns the damage based on the weapon variables
 	#calculates the attack damage from the player
 	for i in range(iterations):
-		dmgDealt += random.randint(mindmg, maxdmg)
+		dmgDealt = random.randint(mindmg, maxdmg)
 		print()
 		print(f"{dmgDealt}! damage")
+		totalDmg += dmgDealt
 		time.sleep(1)
-	return dmgDealt
+	return totalDmg
 
 def enemyDifficulty(difficulty, enemyList):
 	#creates an encounter for the player to fight
@@ -415,7 +419,7 @@ def itemCheck(itemDic):
 		if itemDic[key] > 0:
 			items = True
 			print("")
-			print(f"You have {itemDic[key]} {key}(s)")
+			print(f"You have {itemDic[key]} {key}")
 	#checks if the player has an item or not and how many
 	if items == False:
 		print("")
@@ -432,19 +436,25 @@ def useItem(dic, player):
 			statsDic["Items Used:"] += 1
 			if itemChoice == "Health Potion":
 				player.setHp(player.getHp() + random.randint(20,40))
+				print()
+				print("Your wounds close, you feel slightly better")
 				break
 			elif itemChoice == "Strength Potion":
 				player.setMod(player.getMod() + 5)
+				print()
+				print("A red haze covers your vision. You feel stronger.")
 				break
 			elif itemChoice == "Super Health Potion":	
 				player.setHp(player.getHp() + random.randint(60,100))
+				print()
+				print("Your wounds close, you feel much better.")
 				break
 			elif itemChoice == "Rotten Berries":
 				if random.randint(1,4) == random.randint(1,4):
 					newHp = player.getHp() + random.randint(1,5)
 					player.setHp(newHp)
 					print()
-					print(f"You eat the berries. They taste off, but you feel slightly better. Healed {newHp}")
+					print(f"You eat the berries. They taste off, but you feel less terrible. Healed {newHp}")
 				else:
 					hpLost = player.getHp() - random.randint(1,5)
 					player.setHp(hpLost)
@@ -455,6 +465,10 @@ def useItem(dic, player):
 			elif itemChoice == "Rubber Chicken":	
 				print()
 				print("The chicken squawks and dissapears")
+				if random.randint(1, 100) > 95:
+					player.setMod(player.getMod() + 2)
+					print()
+					print("You feel happy.")
 				
 				break
 				
@@ -566,14 +580,16 @@ def fight(player, enemy):
 					else:
 						print("")
 						print(f"The {enemy.getName()} has {enemyTempHp} health left")
-					
-					player.setMod(0)
+					if player.getWeapon() != "error":
+						player.setMod(0)
 				#result of dodge check being True means they dodged
 				else:
 					#resets hitcount to make dodges harder again
 					enemyHitCount = 0
 					print("")
 					print("The enemy dodged the attack")
+					if player.getWeapon() == "error":
+						player.setMod(player.getMod() + 2)
 					#makes an output statement to notify player that the enemy dodged
 			
 			elif action == "item":
@@ -594,6 +610,8 @@ def fight(player, enemy):
 				if runCheck(playerHitCount) == False:
 					print("")
 					print(f"{player.getName()} tried to run, but could not escape.")
+					if player.getWeapon() == "error":
+						player.setMod(player.getMod() + 2)
 				
 				else:
 					print("")
@@ -637,7 +655,11 @@ def fight(player, enemy):
 				
 				else:
 					print("")
-					print(f"{enemy.getName()} dealt {dmgTaken} damage. {player.getName} has {player.getHp()} hp left.")
+					print(f"{enemy.getName()} dealt {dmgTaken} damage. {player.getName()} has {player.getHp()} hp left.")
+					
+					if player.getWeapon() == "error":
+						player.setMod(player.getMod() + 2)
+					
 					if player.getArmor() > 0:
 						print("")
 						print("The defense aura sputters and fades.")
@@ -688,6 +710,10 @@ def bossFight(player, difficulty):
 	elif difficulty == "Easy":
 		
 		bossHp = 200
+	
+	print()
+	print("You are attacked by the incredibly powerful Matthew Priem!")
+	print()
 		
 	while bossAlive:
 		
@@ -710,7 +736,7 @@ def bossFight(player, difficulty):
 					
 					if bossHp <= 0:
 						print("")
-						print(f"Mathew Priem has been slain!")
+						print(f"You have defeated Matthew Priem!")
 						statsDic["Boss defeated?"] = "Yes"
 						if bossHp < 0:
 							bossHp = 0
@@ -730,6 +756,8 @@ def bossFight(player, difficulty):
 					bossHitCount = 0
 					print("")
 					print("Matthew Priem dodged the attack")
+					if player.getWeapon() == "error":
+						player.setMod(player.getMod() + 2)
 					#makes an output statement to notify player that the enemy dodged
 			
 			elif action == "item":
@@ -749,6 +777,8 @@ def bossFight(player, difficulty):
 				#run check time(run away)
 				print()
 				print("You cannot escape.")
+				if player.getWeapon() == "error":
+					player.setMod(player.getMod() + 2)
 				continue
 			
 			else:
@@ -766,7 +796,7 @@ def bossFight(player, difficulty):
 			print()
 		
 		if bossHp > 0:
-			decision = random.randint[1, 100]
+			decision = random.randint(1, 100)
 			if charging:
 				decision = 50
 			tempDmg = 0
@@ -775,22 +805,22 @@ def bossFight(player, difficulty):
 				print()
 				print("Priem makes fun of your handwriting.")
 				
-				tempDmg = random.randint[10, 30]
+				tempDmg = random.randint(10, 30)
 			
 			elif decision < 70:
 				if charging:
 					
 					print()
-					print("Beams of light shoot out from Priem's eyes!")
+					print("You have been randomly selected to complete step 8.")
 					
-					tempDmg = random.randint[30, 100]
+					tempDmg = random.randint(30, 100)
 					
 					charging = False
 				
 				else:
 					
 					print()
-					print("Priem's eyes begin glowing, charging up a powerful attack!")
+					print("Priem is charging up a powerful attack!")
 					charging = True
 			
 			elif decision < 90:
@@ -798,7 +828,7 @@ def bossFight(player, difficulty):
 				print()
 				print("Priem has failed your exam.")
 				
-				tempDmg = random.randint[25, 40]
+				tempDmg = random.randint(25, 40)
 			
 			else:
 				
@@ -828,7 +858,11 @@ def bossFight(player, difficulty):
 				
 				else:
 					print("")
-					print(f"Priem dealt {dmgTaken} damage. {player.getName} has {player.getHp()} hp left.")
+					print(f"Priem dealt {dmgTaken} damage. {player.getName()} has {player.getHp()} hp left.")
+					
+					if player.getWeapon() == "error":
+						player.setMod(player.getMod() + 2)
+					
 					if player.getArmor() > 0:
 						print("")
 						print("The defense aura sputters and fades.")
@@ -930,9 +964,9 @@ def __main__():
 	
 	
 	#creates example enemies                                   
-	goblin = Enemy("Goblin", 25, 10, 1)
+	goblin = Enemy("Goblin", 20, 10, 1)
 	rock = Enemy("Rock Creature", 50, 20, 2)
-	syntax = Enemy("Syntax Error", 35, 30, 2)
+	syntax = Enemy("Syntax Error", 30, 30, 2)
 	golem = Enemy("Golem", 60, 10, 3)
 	lego = Enemy("A single lego brick", 10, 100, 5)
 	runTime = Enemy("Runtime Error", 100, 40, 8)
@@ -955,12 +989,16 @@ def __main__():
 		elif i == 7:
 			itemRoom(player, items, 6)
 		elif i == 8:
-			bossFight(player, difficulty)
+			if not bossFight(player, difficulty):
+				playerAlive = False
+				break
+			else:
+				pass
 		else:
 			#if not a special room, it sets up a normal encounter room.
 			combatList = combatEncounter(enemyList, crCap) 
-			crCap += 3
-			if doCombat(combatList, player) == False:
+			crCap += 2
+			if not doCombat(combatList, player):
 				playerAlive = False
 				break
 			else:
@@ -970,13 +1008,19 @@ def __main__():
 		statsDic["Rooms Cleared:"] += 1
 		
 		input("Press enter to continue to the next room")
+		
+		#clears terminal on windows
 		os.system('cls')
+		#clears terminal on mac and linux, commented out as most folks use windows
+		#os.system('clear')
 	
 	print()	
-	if playerAlive == False:
+	if not playerAlive:
 		print("Better luck next time!")
 	else:
-		print("Congratulations!")
+		print("Congratulations! You have beaten the world's hardest(allegedly) text-based room-to-room dungeon crawler written in python!")
+		print("This game was co-written by Owen Heuschele and Mason Schierts over a time period of just under one month.")
+		print("This was pretty fun to make.")
 		
 	endTime = time.time()
 	timeTaken = timeInMinutes(startTime, endTime)
