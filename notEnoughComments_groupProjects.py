@@ -45,6 +45,7 @@ class ThePlayer:
 		self.weapon = weapon
 		self.modifier = 0
 		self.resist = 0
+		self.reload = False
 		#Playername is for refrencing the player in prompts
 		#damage is max damage that the player CAN deal, not guarenteed
 	def getName(self):
@@ -58,7 +59,12 @@ class ThePlayer:
 	
 	def setMod(self, newMod):
 		self.modifier = newMod
+	
+	def	reloading(self):
+		return self.reload
 		
+	def setReload(self, torf):
+		self.reload = torf
 	
 	def getArmor(self):
 		return self.modifier
@@ -248,6 +254,7 @@ def weaponDamage(player, modifier):
 		mindmg = 5
 		maxdmg = 19 + modifier
 		iterations = 2
+		player.setReload(True)
 	
 	elif weapon == "words":
 		mindmg = 0
@@ -271,6 +278,7 @@ def weaponDamage(player, modifier):
 		dmgDealt += random.randint(mindmg, maxdmg)
 		print()
 		print(f"{dmgDealt}! damage")
+		time.sleep(1)
 	return dmgDealt
 
 def enemyDifficulty(difficulty, enemyList):
@@ -528,76 +536,82 @@ def fight(player, enemy):
 	#-we can pull a stat block of an enemy type and use that to feed into the fight encounter
 	while enemyAlive:
 		#used to break when the enemy dies to end the fight
-		
-		modifier = player.getMod()
-		#player turn
-		print("")
-		action = input(f"What will {player.getName()} do? (attack, item, run): ")
-		#asks input from player for their action
-		if action == "attack":
-			
-			
-			if dodgeCheck(enemyHitCount) == False:	
-			#calls a dodge check to see if the enemy dodges
+		if not player.reloading():
+			modifier = player.getMod()
+			#player turn
+			print("")
+			action = input(f"What will {player.getName()} do? (attack, item, run): ")
+			#asks input from player for their action
+			if action == "attack":
 				
-				hitDmg= weaponDamage(player, modifier)
-				enemyTempHp -= hitDmg
-				enemyHitCount += 1
-				statsDic["Damage Dealt:"] += hitDmg
-				#if the enemy does not, it deals damage and ups hitcount for later dodge checks
 				
-				if enemyTempHp <= 0:
-					print("")
-					print(f"The {enemy.getName()} has been slain!")
-					itemDrop(enemy, items)
-					enemyAlive = False
+				if dodgeCheck(enemyHitCount) == False:	
+				#calls a dodge check to see if the enemy dodges
+					
+					hitDmg= weaponDamage(player, modifier)
+					enemyTempHp -= hitDmg
+					enemyHitCount += 1
+					statsDic["Damage Dealt:"] += hitDmg
+					#if the enemy does not, it deals damage and ups hitcount for later dodge checks
+					
+					if enemyTempHp <= 0:
+						print("")
+						print(f"The {enemy.getName()} has been slain!")
+						itemDrop(enemy, items)
+						enemyAlive = False
 
-				#checks if the enemy has been killed by the attack
-				#if yes, produces a kill message, if not, produces a remaining hp message
+					#checks if the enemy has been killed by the attack
+					#if yes, produces a kill message, if not, produces a remaining hp message
+					
+					else:
+						print("")
+						print(f"The {enemy.getName()} has {enemyTempHp} health left")
+					
+					player.setMod(0)
+				#result of dodge check being True means they dodged
+				else:
+					#resets hitcount to make dodges harder again
+					enemyHitCount = 0
+					print("")
+					print("The enemy dodged the attack")
+					#makes an output statement to notify player that the enemy dodged
+			
+			elif action == "item":
+				#make a thing to use items here
+				#dictionary of items, check if player has(if key in dic.keys()), tell player what they have
+				#create function with all items as input.
+				
+				if itemCheck(items) == False:
+					continue
+				
+				else:
+					useItem(items, player)
+				
+				
+			
+			elif action == "run":
+				#run check time(run away)
+				if runCheck(playerHitCount) == False:
+					print("")
+					print(f"{player.getName()} tried to run, but could not escape.")
 				
 				else:
 					print("")
-					print(f"The enemy has {enemyTempHp} health left")
-				
-				player.setMod(0)
-			#result of dodge check being True means they dodged
-			else:
-				#resets hitcount to make dodges harder again
-				enemyHitCount = 0
-				print("")
-				print("The enemy dodged the attack")
-				#makes an output statement to notify player that the enemy dodged
-		
-		elif action == "item":
-			#make a thing to use items here
-			#dictionary of items, check if player has(if key in dic.keys()), tell player what they have
-			#create function with all items as input.
+					print(f"The {enemy.getName()} got bored, and decided to leave {player.getName()} alone.")
+					break
 			
-			if itemCheck(items) == False:
+			else:
+				#resets to ask player action again if the player inputs something that is not expected
+				print("")
+				print("Please enter a valid input.")
+				print("")
 				continue
-			
-			else:
-				useItem(items, player)
-			
-			
-		
-		elif action == "run":
-			#run check time(run away)
-			if runCheck(playerHitCount) == False:
-				print("")
-				print(f"{player.getName()} tried to run, but could not escape.")
-			
-			else:
-				print("")
-				print(f"The {enemy.getName()} got bored, and decided to leave {player.getName()} alone.")
-				break
-		
 		else:
-			#resets to ask player action again if the player inputs something that is not expected
-			print("")
-			print("Please enter a valid input.")
-			print("")
-			continue
+			print()
+			print("Reloading")
+			player.setReload(False)
+			time.sleep(2)
+			print()
 		
 		#enemy turn
 		if enemyTempHp > 0:
@@ -623,7 +637,7 @@ def fight(player, enemy):
 				
 				else:
 					print("")
-					print(f"{player.getName()} took {dmgTaken} damage and has {player.getHp()} hp left.")
+					print(f"{enemy.getName()} dealt {dmgTaken} damage. {player.getName} has {player.getHp()} hp left.")
 					if player.getArmor() > 0:
 						print("")
 						print("The defense aura sputters and fades.")
@@ -654,8 +668,182 @@ def doCombat(encounter, aPlayer):
 			pass
 	return playerAlive
 
-def bossFight(player):
-	pass
+def bossFight(player, difficulty):
+	
+	charging = False
+	playerAlive = True
+	playerHitCount = 0
+	bossAlive = True
+	bossHitCount = 0
+	bossHp = 0
+	
+	if difficulty == "Hard":
+		
+		bossHp = 600
+	
+	elif difficulty == "Medium":
+		
+		bossHp = 400
+
+	elif difficulty == "Easy":
+		
+		bossHp = 200
+		
+	while bossAlive:
+		
+		if not player.reloading():
+		
+			modifier = player.getMod()
+			action = input(f"What will {player.getName()} do? (attack, item, run): ")
+			#asks input from player for their action
+			if action == "attack":
+				
+				
+				if dodgeCheck(bossHitCount) == False:	
+				#calls a dodge check to see if the enemy dodges
+					
+					hitDmg= weaponDamage(player, modifier)
+					bossHp -= hitDmg
+					bossHitCount += 1
+					statsDic["Damage Dealt:"] += hitDmg
+					#if the boss does not, it deals damage and ups hitcount for later dodge checks
+					
+					if bossHp <= 0:
+						print("")
+						print(f"Mathew Priem has been slain!")
+						statsDic["Boss defeated?"] = "Yes"
+						if bossHp < 0:
+							bossHp = 0
+						bossAlive = False
+
+					#checks if the boss has been killed by the attack
+					#if yes, produces a kill message, if not, produces a remaining hp message
+					
+					else:
+						print("")
+						print(f"Matthew Priem has {bossHp} health left")
+					
+					player.setMod(0)
+				#result of dodge check being True means they dodged
+				else:
+					#resets hitcount to make dodges harder again
+					bossHitCount = 0
+					print("")
+					print("Matthew Priem dodged the attack")
+					#makes an output statement to notify player that the enemy dodged
+			
+			elif action == "item":
+				#make a thing to use items here
+				#dictionary of items, check if player has(if key in dic.keys()), tell player what they have
+				#create function with all items as input.
+				
+				if itemCheck(items) == False:
+					continue
+				
+				else:
+					useItem(items, player)
+				
+				
+			
+			elif action == "run":
+				#run check time(run away)
+				print()
+				print("You cannot escape.")
+				continue
+			
+			else:
+				#resets to ask player action again if the player inputs something that is not expected
+				print("")
+				print("Please enter a valid input.")
+				print("")
+				continue
+		
+		else:
+			print()
+			print("Reloading")
+			player.setReload(False)
+			time.sleep(2)
+			print()
+		
+		if bossHp > 0:
+			decision = random.randint[1, 100]
+			if charging:
+				decision = 50
+			tempDmg = 0
+			if decision < 20:
+				
+				print()
+				print("Priem makes fun of your handwriting.")
+				
+				tempDmg = random.randint[10, 30]
+			
+			elif decision < 70:
+				if charging:
+					
+					print()
+					print("Beams of light shoot out from Priem's eyes!")
+					
+					tempDmg = random.randint[30, 100]
+					
+					charging = False
+				
+				else:
+					
+					print()
+					print("Priem's eyes begin glowing, charging up a powerful attack!")
+					charging = True
+			
+			elif decision < 90:
+				
+				print()
+				print("Priem has failed your exam.")
+				
+				tempDmg = random.randint[25, 40]
+			
+			else:
+				
+				print()
+				print("Priem urges you to do the supplemental homework.")
+				
+			if dodgeCheck(playerHitCount) == False:
+				#checks if the player dodges, if failed, goes through the attack
+				
+				dmgTaken = tempDmg - player.getArmor()
+				
+				if dmgTaken < 0:
+					dmgTaken = 0
+				#calls the damage from the enemy and deals it to player
+				
+				
+					
+				player.setHp(player.getHp() - dmgTaken)
+				statsDic["Damage Taken:"] += dmgTaken
+				
+				if player.getHp() <= 0:
+					print("")
+					print(f"{player.getName()} has died at the hands of Priem.")
+					playerAlive = False
+					break
+					#if player dies, the death message will be produced and it breaks the loop
+				
+				else:
+					print("")
+					print(f"Priem dealt {dmgTaken} damage. {player.getName} has {player.getHp()} hp left.")
+					if player.getArmor() > 0:
+						print("")
+						print("The defense aura sputters and fades.")
+					#if player is not dead, shows a message with damage taken and remaining hp of player
+				player.setArmor(0)
+			
+			else:
+				print("")
+				print(f"{player.getName()} dodged Priem's attack!")
+				#prints out if a successful dodge
+			
+			time.sleep(1)
+	
+	statsDic["Remaining Boss Hp:"] = bossHp
+	return playerAlive
 
 def timeInMinutes(start, end):
 	#a clock, finds the time player took to play game
@@ -767,7 +955,7 @@ def __main__():
 		elif i == 7:
 			itemRoom(player, items, 6)
 		elif i == 8:
-			pass
+			bossFight(player, difficulty)
 		else:
 			#if not a special room, it sets up a normal encounter room.
 			combatList = combatEncounter(enemyList, crCap) 
