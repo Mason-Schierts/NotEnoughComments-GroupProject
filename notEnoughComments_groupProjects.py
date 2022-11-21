@@ -435,6 +435,7 @@ def useItem(dic, player):
 		itemChoice = input("Enter the name of the item you would like to use: ")
 		if itemChoice in dic.keys():
 			statsDic["Items Used:"] += 1
+			dic[itemChoice] -= 1
 			if itemChoice == "Health Potion":
 				hpHealed = random.randint(20,40)
 				player.setHp(player.getHp() + hpHealed)
