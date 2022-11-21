@@ -28,6 +28,7 @@ statsDic = {
 				"Difficulty:": "",
 				"Weapon:": "",
 				"Damage Taken:":0,
+				"Health Healed:":0,
 				"Remaining Hp:": 0,
 				"Damage Dealt:":0,
 				"Enemies Slain:":0,
@@ -435,9 +436,11 @@ def useItem(dic, player):
 		if itemChoice in dic.keys():
 			statsDic["Items Used:"] += 1
 			if itemChoice == "Health Potion":
-				player.setHp(player.getHp() + random.randint(20,40))
+				hpHealed = random.randint(20,40)
+				player.setHp(player.getHp() + hpHealed)
 				print()
 				print("Your wounds close, you feel slightly better")
+				statsDic["Health Healed:"] += hpHealed
 				break
 			elif itemChoice == "Strength Potion":
 				player.setMod(player.getMod() + 5)
@@ -1029,7 +1032,7 @@ def __main__():
 	print("")
 	if checkFile == "y":
 		
-		if player.getHp < 0:
+		if player.getHp() < 0:
 			player.setHp(0)
 		
 		statsDic["Remaining Hp:"] = player.getHp()
