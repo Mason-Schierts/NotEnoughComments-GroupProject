@@ -320,10 +320,9 @@ def itemDrop(enemy, itemDic):
 	#feeds in a list of all items and an enemy dropping the item
 	templist = []
 	
-	chance1 = random.randint(1, 10)
-	chance2 = random.randint(1, 10)
+	chance = random.randint(1, 100)
 	#creates a random chance based on enemy cr to drop an item
-	if chance1 == chance2:
+	if chance >= 75:
 		
 		randCheck = random.randint(1,1000)
 		
