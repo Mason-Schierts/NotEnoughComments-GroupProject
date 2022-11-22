@@ -1,6 +1,15 @@
 """
 Team Not Enough Comments
 
+Owen Heuschele:
+	Idea guy and flavor text manager
+	General coding
+
+Mason Schierts
+	Idea control and bug testing
+	General coding
+	~80% of comments
+	
 start date: 10/24/2022
 Text based room to room dungeon crawler game
 """
