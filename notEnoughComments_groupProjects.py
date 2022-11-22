@@ -949,7 +949,10 @@ def timeInMinutes(start, end):
 	#finds out the runtime in minutes and seconds
 	seconds = round(timeInSeconds - (minutes * 60))
 	#returns it for a stat page
-	return f"{minutes}:{seconds}"
+	if seconds < 10:
+		return f"{minutes}:0{seconds}"
+	else:
+		return f"{minutes}:{seconds}"
 
 	#calls for a time check when game ends
 	endTime = time.time()
