@@ -810,13 +810,13 @@ def bossFight(player, difficulty):
 				
 				tempDmg = random.randint(10, 30)
 			
-			elif decision < 70:
+			elif decision < 40:
 				if charging:
 					
 					print()
 					print("You have been randomly selected to complete step 8.")
 					
-					tempDmg = random.randint(30, 100)
+					tempDmg = random.randint(40, 130)
 					
 					charging = False
 				
@@ -972,7 +972,7 @@ def __main__():
 	syntax = Enemy("Syntax Error", 30, 30, 2)
 	golem = Enemy("Golem", 60, 10, 3)
 	lego = Enemy("A single lego brick", 10, 100, 5)
-	runTime = Enemy("Runtime Error", 100, 40, 8)
+	runTime = Enemy("Runtime Error", 75, 30, 8)
 	
 
 	enemyList = [goblin, rock, syntax, golem, lego, runTime]
