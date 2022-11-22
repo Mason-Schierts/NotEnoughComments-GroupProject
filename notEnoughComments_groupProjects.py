@@ -807,8 +807,8 @@ def bossFight(player, difficulty):
 					else:
 						print("")
 						print(f"Matthew Priem has {bossHp} health left")
-					
-					player.setMod(0)
+					if player.getWeapon() != "error":
+						player.setMod(0)
 				#result of dodge check being True means they dodged
 				else:
 					#resets hitcount to make dodges harder again
