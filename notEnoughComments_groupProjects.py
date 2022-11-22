@@ -801,7 +801,7 @@ def bossFight(player, difficulty):
 		if bossHp > 0:
 			decision = random.randint(1, 100)
 			if charging:
-				decision = 50
+				decision = 30
 			tempDmg = 0
 			if decision < 20:
 				
