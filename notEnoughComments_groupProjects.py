@@ -797,44 +797,47 @@ def bossFight(player, difficulty):
 			player.setReload(False)
 			time.sleep(2)
 			print()
+			#checks is player is reloading (for gun weapon)
 		
 		if bossHp > 0:
+			#if the boss is alive, it selects an attack to use
 			decision = random.randint(1, 100)
+			#if charged attack on previous move, uses the charged attack
 			if charging:
 				decision = 30
 			tempDmg = 0
 			if decision < 20:
-				
+				 #normal attack
 				print()
 				print("Priem makes fun of your handwriting.")
 				
 				tempDmg = random.randint(10, 30)
 			
-			elif decision < 40:
+			elif decision < 45:
 				if charging:
-					
+					#charged attack, checks if charging on previous turn before doing damage
 					print()
 					print("You have been randomly selected to complete step 8.")
 					
 					tempDmg = random.randint(40, 130)
-					
+					#resets charge to allow later use
 					charging = False
 				
 				else:
-					
+					#spurs the charging for the attack
 					print()
 					print("Priem is charging up a powerful attack!")
 					charging = True
 			
 			elif decision < 90:
-				
+				#normal attack and higher damage
 				print()
 				print("Priem has failed your exam.")
 				
 				tempDmg = random.randint(25, 40)
 			
 			else:
-				
+				#a weird attack
 				print()
 				print("Priem urges you to do the supplemental homework.")
 				
@@ -842,7 +845,7 @@ def bossFight(player, difficulty):
 				#checks if the player dodges, if failed, goes through the attack
 				
 				dmgTaken = tempDmg - player.getArmor()
-				
+				#
 				if dmgTaken < 0:
 					dmgTaken = 0
 				#calls the damage from the enemy and deals it to player
@@ -862,7 +865,7 @@ def bossFight(player, difficulty):
 				else:
 					print("")
 					print(f"Priem dealt {dmgTaken} damage. {player.getName()} has {player.getHp()} hp left.")
-					
+					#printout on the damage and then a modifier for a weapon type
 					if player.getWeapon() == "error":
 						player.setMod(player.getMod() + 2)
 					
