@@ -24,6 +24,7 @@ items = {
 			#if number in range of item giver, u get that item, for chicken has to be ONE number
 			}
 
+#initializes a dictionary to keep track of statistics
 statsDic = {
 				"Difficulty:": "",
 				"Weapon:": "",
@@ -55,18 +56,21 @@ class ThePlayer:
 	def getHp(self):
 		return self.hp
 	
+	#for strength potions and error weapon
 	def getMod(self):
 		return self.modifier
 	
 	def setMod(self, newMod):
 		self.modifier = newMod
 	
+	#for gun weapon
 	def	reloading(self):
 		return self.reload
 		
 	def setReload(self, torf):
 		self.reload = torf
 	
+	#for resistance potions
 	def getArmor(self):
 		return self.resist
 	
@@ -205,14 +209,13 @@ def weaponChoice(difficulty):
 	
 	elif weaponChoice == "The Power of errorCodes":
 		playerWeapon = "error"
-
-	
-	
+	#sets return variable with more manageable string length
 	
 	return playerWeapon
 
 def weaponDamage(player, modifier):
 	#sets up calculationa and damage of the weapon the player has
+	#takes a modifier that affects max damage
 	weapon = player.getWeapon()
 	dmgDealt = 0
 	totalDmg = 0
@@ -222,7 +225,7 @@ def weaponDamage(player, modifier):
 		iterations = 2
 			
 	elif weapon == "axe":
-		mindmg = 1
+		mindmg = 10
 		maxdmg = 30
 		iterations = 1
 		
@@ -326,6 +329,7 @@ def itemDrop(enemy, itemDic):
 		
 		randCheck = random.randint(1,1000)
 		
+		#a loot table that determines drop rates for items
 		if randCheck < 500:
 			templist = ["Rotten Berries"]
 			
@@ -430,29 +434,44 @@ def useItem(dic, player):
 	#calls for the use of an item
 	
 	while True:
+		#makes sure of a correct input
 		print("")
 		itemChoice = input("Enter the name of the item you would like to use: ")
 		if itemChoice in dic.keys():
+			
 			statsDic["Items Used:"] += 1
 			dic[itemChoice] -= 1
+			#tracks that an item has been used and removes the used item from the player's inventory
+			
 			if itemChoice == "Health Potion":
+				
+				#heals the player
 				hpHealed = random.randint(20,40)
 				player.setHp(player.getHp() + hpHealed)
 				print()
 				print("Your wounds close, you feel slightly better")
 				statsDic["Health Healed:"] += hpHealed
 				break
+			
 			elif itemChoice == "Strength Potion":
+				
+				#gives the player a temporary damage modifier
 				player.setMod(player.getMod() + 5)
 				print()
 				print("A red haze covers your vision. You feel stronger.")
 				break
+			
 			elif itemChoice == "Super Health Potion":	
+				
+				#heals the player quite a bit
 				player.setHp(player.getHp() + random.randint(60,100))
 				print()
 				print("Your wounds close, you feel much better.")
 				break
+			
 			elif itemChoice == "Rotten Berries":
+				
+				#a chance to barely heal the player or slightly damage the player
 				if random.randint(1,4) == random.randint(1,4):
 					newHp = player.getHp() + random.randint(1,5)
 					player.setHp(newHp)
@@ -465,7 +484,10 @@ def useItem(dic, player):
 					print()
 					print("That was not the best idea. Some hp has been lost.")
 					break
+			
 			elif itemChoice == "Rubber Chicken":	
+				
+				#does nothing most of the time, or gives a temporary damage modifier
 				print()
 				print("The chicken squawks and dissapears")
 				if random.randint(1, 100) > 95:
@@ -475,11 +497,16 @@ def useItem(dic, player):
 				
 				break
 				
+			
 			elif itemChoice == "Resistance Potion":
-				player.setArmor(player.getArmor() + 5)
+				
+				#gives the player a small temporary defense boost
+				player.setArmor(player.getArmor() + 10)
 				print()
 				print("A glowing aura surrounds you. You feel safer.")
 				break
+		
+		#restarts the loop given an incorrect input
 		else:
 			print("")
 			print("Enter item name as seen above.")
@@ -553,7 +580,11 @@ def fight(player, enemy):
 	#-we can pull a stat block of an enemy type and use that to feed into the fight encounter
 	while enemyAlive:
 		#used to break when the enemy dies to end the fight
+		
 		if not player.reloading():
+			#for gun weapon, only does player turn if player is not reloading
+			
+			#gets modifier for combat
 			modifier = player.getMod()
 			#player turn
 			print("")
@@ -583,16 +614,21 @@ def fight(player, enemy):
 					else:
 						print("")
 						print(f"The {enemy.getName()} has {enemyTempHp} health left")
+					
+					#if the player has a modifier, it should be temporary unless the weapon is error
 					if player.getWeapon() != "error":
 						player.setMod(0)
+				
 				#result of dodge check being True means they dodged
 				else:
 					#resets hitcount to make dodges harder again
 					enemyHitCount = 0
 					print("")
 					print("The enemy dodged the attack")
+					
+					#gives modifier if error
 					if player.getWeapon() == "error":
-						player.setMod(player.getMod() + 2)
+						player.setMod(player.getMod() + 1)
 					#makes an output statement to notify player that the enemy dodged
 			
 			elif action == "item":
@@ -613,6 +649,8 @@ def fight(player, enemy):
 				if runCheck(playerHitCount) == False:
 					print("")
 					print(f"{player.getName()} tried to run, but could not escape.")
+					
+					#gives modifier if error
 					if player.getWeapon() == "error":
 						player.setMod(player.getMod() + 2)
 				
@@ -628,6 +666,7 @@ def fight(player, enemy):
 				print("")
 				continue
 		else:
+			#reloads if gun and reloading
 			print()
 			print("Reloading")
 			player.setReload(False)
@@ -642,7 +681,7 @@ def fight(player, enemy):
 				dmgTaken = random.randint(1,dmgRange) - player.getArmor()
 				if dmgTaken < 0:
 					dmgTaken = 0
-				#calls the damage from the enemy and deals it to player
+				#calls the damage from the enemy and deals it to player minus armor value
 				
 				
 					
@@ -661,11 +700,13 @@ def fight(player, enemy):
 					print(f"{enemy.getName()} dealt {dmgTaken} damage. {player.getName()} has {player.getHp()} hp left.")
 					
 					if player.getWeapon() == "error":
-						player.setMod(player.getMod() + 2)
+						player.setMod(player.getMod() + 1)
+						#gives mod if error
 					
 					if player.getArmor() > 0:
 						print("")
 						print("The defense aura sputters and fades.")
+						#if playor has armor, removes
 					#if player is not dead, shows a message with damage taken and remaining hp of player
 				player.setArmor(0)
 			
@@ -685,16 +726,21 @@ def doCombat(encounter, aPlayer):
 	#calls for every enemy in the encounter to be fought back to back
 	playerAlive = True
 	for aEnemy in encounter:
+		
 		print(f"{aPlayer.getName()} is attacked by a {aEnemy.getName()}!")
+		
 		if fight(aPlayer, aEnemy) == False:
 			playerAlive = False
 			break
 		else:
 			pass
+	#returns player alive to track if the player has died in combat
 	return playerAlive
 
 def bossFight(player, difficulty):
-	
+	#this works the same as regular combat with a few quirks
+	#hp is decided from difficulty and the enemy is not an object 
+	#the boss has a couple of different attack options
 	charging = False
 	playerAlive = True
 	playerHitCount = 0
@@ -702,6 +748,7 @@ def bossFight(player, difficulty):
 	bossHitCount = 0
 	bossHp = 0
 	
+	#determines boss hp
 	if difficulty == "Hard":
 		
 		bossHp = 600
@@ -995,20 +1042,20 @@ def __main__():
 		elif i == 7:
 			itemRoom(player, items, 6)
 		elif i == 8:
+			
+			#checks if the player is alive
 			if not bossFight(player, difficulty):
 				playerAlive = False
 				break
-			else:
-				pass
 		else:
 			#if not a special room, it sets up a normal encounter room.
 			combatList = combatEncounter(enemyList, crCap) 
 			crCap += 2
+			
+			#checks if the player is alive
 			if not doCombat(combatList, player):
 				playerAlive = False
 				break
-			else:
-				pass
 			
 		
 		statsDic["Rooms Cleared:"] += 1
@@ -1027,7 +1074,8 @@ def __main__():
 		print("Congratulations! You have beaten the world's hardest(allegedly) text-based room-to-room dungeon crawler written in python!")
 		print("This game was co-written by Owen Heuschele and Mason Schierts over a time period of just under one month.")
 		print("This was pretty fun to make.")
-		
+	
+	#tracks time	
 	endTime = time.time()
 	timeTaken = timeInMinutes(startTime, endTime)
 	print("")
@@ -1050,6 +1098,7 @@ def __main__():
 		runStats.write("{:20s} {:<6s}".format("Character Name:", player.getName()) + "\n")
 		runStats.write("{:20s} {:<6s}".format("Time taken:", timeTaken) + "\n")
 		
+		#writes stats to file in proper format
 		for key in statsDic:
 			
 			try:
