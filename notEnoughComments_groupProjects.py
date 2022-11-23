@@ -615,6 +615,7 @@ def fight(player, enemy):
 						print("")
 						print(f"The {enemy.getName()} has been slain!")
 						itemDrop(enemy, items)
+						player.setReload(False)
 						enemyAlive = False
 
 					#checks if the enemy has been killed by the attack
