@@ -473,7 +473,9 @@ def useItem(dic, player):
 			elif itemChoice == "Super Health Potion":	
 				
 				#heals the player quite a bit
-				player.setHp(player.getHp() + random.randint(60,100))
+				hpHealed = random.randint(60,100))
+				player.setHp(player.getHp() + hpHealed
+				statsDic["Health Healed:"] += hpHealed
 				print()
 				print("Your wounds close, you feel much better.")
 				break
